@@ -1,4 +1,22 @@
 
+########################################################################################
+## Packages
+########################################################################################
+
+library(reshape2)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(EasyABC)
+library(gridExtra)
+library(lubridate)
+library(gridExtra)
+library(kableExtra)
+library(plyr)
+library(dplyr)
+library(scales)
+library(tidyr)
+library(reshape)
 
 
 ########################################################################################
