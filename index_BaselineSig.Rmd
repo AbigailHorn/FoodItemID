@@ -1,0 +1,509 @@
+---
+title: "Baseline Signals ~ Network Features"
+author: "Abigail Horn"
+date: "1/27/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+<!--Initialize-->
+
+``` {r setup, include=FALSE}
+
+### Install necessary packages and get started
+
+library(reshape2)
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(ggrepel)
+library(bindata)
+library(odin)
+library(fitR)
+library(knitr)
+library(EasyABC)
+library(gridExtra)
+library(odin)
+library(lubridate)
+library(EasyABC)
+library(gridExtra)
+library(kableExtra)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(scales)
+library(EasyABC)
+library(patchwork)
+
+library(tidyr)
+library(readr)
+library(purrr)
+library(tibble)
+library(stringr)
+library(forcats)
+library(network)
+library(tidygraph)
+library(ggraph)
+library(visNetwork)
+library(networkD3)
+library(ggmosaic)
+library(formattable)
+library(DT)
+library(reshape)
+library(here)
+library(fs)
+
+library(MASS)
+library(plotly)
+
+lang_output <- function(x, lang) {
+  cat(c(sprintf("```%s", lang), x, "```"), sep = "\n")
+}
+r_output <- function(x) lang_output(x, "r")
+
+knitr::opts_chunk$set(
+  fig.width = 9.5,
+  fig.height = 8,
+  eval=TRUE,
+  echo=FALSE,
+  warning=FALSE,
+  cache=FALSE,
+  message=FALSE,
+  include=TRUE
+  )
+
+code.dir=here("code/")
+data.dir=here("data/")
+features.dir=here("data/networkfeatures/")
+fig.dir = here("figs/")
+output.dir = here("output/")
+
+
+```
+
+
+# Get mean and sd of baseline sigs: simulated and rand
+
+```{r}
+
+# fn_t_readin_path <- path(data.dir, "fn_t_readin.csv")
+# fn_t_readin = as.data.frame(read.csv(fn_t_readin_path, sep=",",stringsAsFactors = FALSE))
+
+get.sig.CI.fn <- function(sig_readin_path, iter){
+  
+  sig_data = read.csv(sig_readin_path, sep=",", header = FALSE)
+  colnames(sig_data) = c("foodnet","num_ill", paste0("iter.",c(1:iter)))
+  sig_data$foodnet <- factor(sig_data$foodnet, levels =  unique(sig_data$foodnet))
+  
+  sig.traj <- reshape2::melt(sig_data, measure.vars = c(3:ncol(sig_data)), variable.name = "iter")
+  
+  sig.traj_dt <- as.data.table(sig.traj)
+  
+  sig.CI <- sig.traj_dt[, list(
+    N=.N,
+    mean = mean(value),
+    sd = sd(value),
+    median = quantile(value, c(.5),na.rm=TRUE),
+    low_95 = quantile(value, c(.025),na.rm=TRUE),
+    up_95 = quantile(value, c(.975),na.rm=TRUE),
+    up_50 = quantile(value,.75,na.rm=TRUE),
+    low_50 = quantile(value,.25,na.rm=TRUE)),
+    by = c("foodnet", "num_ill")]
+  sig.CI <- as.data.frame(sig.CI)
+  
+  vars.to.plot <- c("vegetables",   "eggs",         "sausageTC",    "cheese",       "milkProducts", "poultry")  
+  
+  sig.CI <- sig.CI %>% filter(foodnet %in% vars.to.plot) %>% select(c(foodnet,num_ill,mean,sd))
+  
+  return(sig.CI)
+  
+}
+
+sig_sim_readin_path <- path(data.dir, "BaselineSig_out/BaselineSig_Germany_WHS_Simul.csv")
+sig_sim.CI <- get.sig.CI.fn(sig_readin_path=sig_sim_readin_path, iter=1000)
+sig_sim.250 <- sig_sim.CI %>% filter(num_ill==250)
+sig_sim.500 <- sig_sim.CI %>% filter(num_ill==500)
+
+sig_rand_readin_path <- path(data.dir, "BaselineSig_out/BaselineSig_Germany_WHS_Samp.csv")
+sig_rand.CI <- get.sig.CI.fn(sig_readin_path=sig_rand_readin_path, iter=1000)
+sig_rand.250 <- sig_rand.CI %>% filter(num_ill==250)
+sig_rand.500 <- sig_rand.CI %>% filter(num_ill==500)
+
+```
+
+# Create dataframe to do corrmat 
+
+```{r}
+
+all.data <- cbind(sig_sim.250[,3:4], sig_sim.500[,3:4], sig_rand.250[,3:4], sig_rand.500[,3:4])
+rownames(all.data) <- sig_sim.250[,1]
+colnames(all.data) <-
+  apply(expand.grid(c("mean.","sd."),c("sig_sim.250","sig_sim.500","sig_rand.250", "sig_rand.500")), 1, paste, collapse="")
+rownames(all.data)[rownames(all.data)=="sausageTC"] <- "meatProducts"
+
+all.data$foodnets <- rownames(all.data)
+
+# all.data <- cbind(sig_sim.500[,3:4], sig_rand.500[,3:4])
+# rownames(all.data) <- sig_sim.500[,1]
+# colnames(all.data) <- 
+#   apply(expand.grid(c("mean.","sd."),c("sig_sim.500","sig_rand.500")), 1, paste, collapse="")
+# rownames(all.data)[rownames(all.data)=="sausageTC"] <- "meatProducts"
+# 
+# all.data$foodnets <- rownames(all.data)
+
+```
+
+
+# Read in network features files
+
+```{r}
+
+features_readin_path <- path(features.dir)
+
+## If binding them all together
+# library(data.table)
+# 
+# rbindlist_fread <- function(path, pattern = "*.csv") {
+#     files = list.files(path, pattern, full.names = TRUE)
+#     rbindlist(lapply(files, function(x) fread(x)),fill=TRUE)
+# }
+# 
+# listed_files <- rbindlist_fread(path=path(features.dir))
+
+temp = list.files(path=path(features.dir), pattern="*.csv", full.names = TRUE)
+
+file.names <- gsub(".*/Users/abigailhorn/Dropbox/GitHub/RFoodItemID/data/networkfeatures/", "", temp)
+file.names <- gsub("*.csv$", "", file.names)
+file.names <- paste0("NF.", file.names)
+
+list2env(
+  lapply(setNames(temp, make.names(file.names)), 
+         read.csv), envir = .GlobalEnv)
+
+ATEST <- NF.between_Warehouse %>% rename_with( ~ paste("Sub", .x, sep = "_"))
+
+ATEST <- NF.between_Warehouse %>% rename_with( ~ paste("Sub", .x, sep = "_"), .cols = -1)
+
+#rename_with(~ newnames[which(oldnames == .x)], .cols = oldnames)
+
+#iris %>% rename_with( ~ paste("Sub", .x, sep = "_"))
+
+ALIST <- list( between_WHS = NF.between_Warehouse,
+               inDeg_WHS_beta = NF.inDegWare_beta_fit_par,
+               L1Deg = NF.L1Degree,
+               inDeg.mean = NF.meanInDegreeStage,
+               outDeg.mean = NF.meanOutDegreeStage,
+               strength.mean = NF.meanStrengthStage,
+               totDeg.mean = NF.meanTotalDegreeStage,
+               nrSrcNodes = NF.nrSrcNodes,
+               outDeg_Prod_beta = NF.outDegProd_beta_fit_par,
+               inDeg.sd = NF.sdInDegreeStage,
+               outDeg.sd = NF.sdOutDegreeStage,
+               strength.sd = NF.sdStrengthStage,
+               totDeg.sd = NF.sdTotalDegreeStage,
+               strength.tot = NF.totStrengthStage
+               )
+
+for (idx in 1:length(ALIST)){
+  ALIST[[idx]] <- ALIST[[idx]] %>% rename_with( ~paste( names(ALIST)[idx] , .x, sep = "."), .cols = -1)
+  ALIST[[idx]]$X <- str_remove(ALIST[[idx]]$X, "-str")
+  ALIST[[idx]]$X <- str_remove(ALIST[[idx]]$X, "-tc")
+  ALIST[[idx]]$X <- str_remove(ALIST[[idx]]$X, "-dry")
+}
+
+features.data <- ALIST %>% reduce(left_join, by = "X")
+features.data <- features.data[ , !(grepl( "Consumption" , colnames( features.data ) )) ]
+features.data <- features.data[ , !(grepl( "Retail" , colnames( features.data ) )) ]
+features.data <- features.data[, colSums(features.data != 0) > 0]
+rownames(features.data) <- c("meatProducts","cheese","eggs","fruits","milkProducts","poultry","vegetables")
+features.data$foodnets <- rownames(features.data)
+
+```
+
+
+# Join the baseline sigs and network features
+
+```{r}
+
+all.data.together <- left_join(all.data, features.data, by="foodnets", keep=TRUE)
+rownames(all.data.together) <- all.data.together$foodnets.y
+all.data.together$foodnets.y = NULL
+all.data.together$foodnets.x = NULL
+all.data.together$X = NULL
+all.data.together$outDeg.sd.Warehouse = NULL
+
+## Rename variables
+# original.names <- colnames(all.data.together) 
+# rename <- c(original.names[c(1:8)], 
+#             
+#             
+#             
+#   "E[outDeg_producer_Beta]",
+#   "E[inDeg_warehouse_Beta]",
+#   "sd[outDeg_producer_Beta]",
+#   "nr_Producing_nodes",
+#   "sd[in_deg_warehouse_Beta]",
+#   "E[in_deg_warehouse]",
+#   "E[out_deg_warehouse]",
+#   "E[total_deg_warehouse]",
+#   "E[out_deg_producer_Alpha]",
+#   "sd[strength_producer]",
+#   "total[strength_producer]",
+#   "total[strength_warehouse]",
+#   "sd-L1_deg",
+#   "sd[in_deg_warehouse]",
+#   "sd[total_deg_warehouse]",
+#   "sd[out_deg_producer_Alpha]",
+#   "sd[strength_warehouse]",
+#   "E[strength_warehouse]",
+#   "E[in_deg_warehouse_Alpha]",
+#   "sd[out_deg_producer]",
+#   "sd[total_deg_producer]",
+#   "E[strength_producer]",
+#   "mean-L1_deg",
+#   "sd[betweenness_warehouse]",
+#   "E[total_deg_producer]",
+#   "sd[in_deg_warehouse_Alpha]",
+#   "E[betweenness_warehouse]"
+# )
+# 
+# rownames(x.save.order) <- rename
+
+
+```
+
+
+# Corrmats
+
+```{r}
+library(corrplot)
+x <- cor(all.data.together)
+# Save only correlations we are interested in (between the two datasets)
+#x.save <- x[c(1:4),c(5:31)]  # If only 500
+x.save <- x[c(1:8),c(9:36)]  # If 250 and 500
+#heat.x <- heatmap(x.save)
+x.save <- round(x.save,2)
+
+######################################################################
+## View a correlation on x-y
+plot(all.data.together$mean.sig_sim.500, all.data.together$nrSrcNodes.Nr..of.Producing.Source.Nodes)
+plot(all.data.together$mean.sig_sim.500, all.data.together$totDeg.mean.Producer)
+     
+######################################################################
+## corrplot -- no labels
+col<- colorRampPalette(c("blue", "white", "red"))(20)
+corrplot(x.save,  col=col, order(decreasing = TRUE))
+
+x.save.order <- t(x.save)
+x.save.order <- x.save.order[order(-x.save.order[,"mean.sig_sim.500"], x.save.order[,"mean.sig_rand.500"]),]
+corrplot(x.save.order) #, col=col)
+
+######################################################################
+## corrplot -- removing 250
+
+# x.save.mean <- x.save.order[,!(grepl("sd", colnames(x.save.order))) ]
+# corrplot(x.save.mean)
+# 
+# x.save.500 <- x.save.order[,!(grepl("250", colnames(x.save.order))) ]
+# corrplot(x.save.500)
+# 
+# x.save.mean.500 <- x.save.500[,!(grepl("sd", colnames(x.save.500))) ]
+# corrplot(x.save.mean.500)
+# 
+# x.save.mean.500 <- x.save.mean.500[order(-x.save.mean.500[,"mean.sig_sim.500"], -x.save.mean.500[,"mean.sig_rand.500"]),]
+# corrplot(x.save.mean.500)
+
+```
+
+
+# Experimenting with different heatmap packages
+
+```{r}
+
+######################################################################
+## heatmap -- no labels
+hmcol<-colorRampPalette(c("blue","white","red"))(256)
+pdf(file = path(output.dir, "corr_mat_nolabel.pdf"), width=10, height =10)
+heatmap(x.save,col=hmcol)
+dev.off()
+
+######################################################################
+## heatmaply -- labels
+
+install.packages("heatmaply")
+library(heatmaply)
+# heatmaply(x.save[c(1:5),c(1:5)], scale_fill_gradient_fun = ggplot2::scale_fill_gradient2(low = "blue", 
+#     high = "red" 
+#     ), draw_cellnote = TRUE)
+heatmaply(x.save, scale_fill_gradient_fun = ggplot2::scale_fill_gradient2(low = "blue", 
+    high = "red" 
+    ), draw_cellnote = TRUE)
+
+
+######################################################################
+## ggplot + geom_tile() -- labels but hard to organize by highest to lowest. Probably delete this.
+
+library(reshape2)
+melted_cormat <- melt(x.save)
+head(melted_cormat)
+
+melted_cormat$value <- round(melted_cormat$value,2)
+
+library(ggplot2)
+ggplot(data = melted_cormat, aes(x=X1, y=X2, fill=value)) + 
+  geom_tile()
+
+# Create a ggheatmap
+ggheatmap <- ggplot(melted_cormat, aes(X1, X2, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+   midpoint = 0, limit = c(-1,1), space = "Lab", 
+    name="Pearson\nCorrelation") +
+  theme_minimal()+ # minimal theme
+ theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+    size = 12, hjust = 1))+
+ coord_fixed()
+# Print the heatmap
+print(ggheatmap)
+
+ggheatmap + 
+geom_text(aes(X1, X2, label = value), color = "black", size = 2) +
+theme(
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  panel.grid.major = element_blank(),
+  panel.border = element_blank(),
+  panel.background = element_blank(),
+  axis.ticks = element_blank(),
+  legend.justification = c(1, 0),
+  legend.position = c(0.6, 0.7),
+  legend.direction = "horizontal")+
+  guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
+                title.position = "top", title.hjust = 0.5))
+
+```
+
+
+
+# corrplot is the best correlation matrix visualization package
+
+- Possible to plot two side by side?
+- If not, I'll put rand and sim together in same corrplot
+
+```{r}
+
+## Rename variables
+
+original.names <- rownames(x.save.order)
+
+rename <- c(
+  "E[outDeg PRODUCER Beta]",
+  "E[inDeg WAREHOUSE Beta]",
+  "sd[outDeg PRODUCER Beta]",
+  "nr nodes PRODUCER",
+  "sd[inDeg WAREHOUSE Beta]",
+  "E[inDeg WAREHOUSE]",
+  "E[totalDeg WAREHOUSE]",
+  "E[outDeg PRODUCER Alpha]",
+  "sd[strength PRODUCER]",
+  "sum[strength PRODUCER]",
+  "sum[strength WAREHOUSE]",
+  "sd-L1_deg",
+  "sd[inDeg WAREHOUSE]",
+  "sd[totalDeg WAREHOUSE]",
+  "sd[outDeg PRODUCER Alpha]",
+  "sd[strength WAREHOUSE]",
+  "E[strength WAREHOUSE]",
+  "E[inDeg WAREHOUSE Alpha]",
+  "sd[outDeg PRODUCER]",
+  "sd[totalDeg PRODUCER]",
+  "E[strength PRODUCER]",
+  "mean-L1_deg",
+  "sd[centrality WAREHOUSE]",
+    "E[outDeg PRODUCER]",
+  "E[totalDeg PRODUCER]",
+  "sd[inDeg WAREHOUSE Alpha]",
+  "E[centrality WAREHOUSE]",
+  "E[outDeg WAREHOUSE]"
+)
+rownames(x.save.order) <- rename
+x.save.reduce <- x.save.order[!rownames(x.save.order) %in% c("mean-L1_deg","sd-L1_deg","E[outDeg WAREHOUSE]"),]
+corrplot(x.save.reduce)
+
+x.save.mean <- x.save.reduce[,!(grepl("sd", colnames(x.save.reduce))) ]
+x.save.mean <- x.save.mean[,!(grepl("250", colnames(x.save.mean))) ]
+colnames(x.save.mean) <- c("E[Sim-BaseSignal]  ", "E[Rand-BaseSignal]  ")
+corrplot(x.save.mean, tl.col = "black")
+
+
+######################################################
+## Corrplot with mean and sd of network features
+x.save.mean.sd <- x.save.mean
+x.save.mean.sd <- x.save.mean.sd[order(-x.save.mean.sd[,1], x.save.mean.sd[,2]),]
+corrplot(x.save.mean.sd, tl.col = "black")
+
+## Defining a new corrplot function that allows modifying the legend width
+source(path(code.dir,"mycorrplot.r"))
+
+## Print
+pdf(file = path(output.dir, "corrplot_order_yesSD_FINAL_legend.pdf"), width=10, height =10)
+#corrplot(x.save.mean.sd, tl.col = c("black") )
+mycorrplot(x.save.mean.sd, tl.col = "black", cl.ratio=1)
+dev.off()
+
+######################################################
+## Corrplot with only mean of network features
+x.save.mean.only <- x.save.mean
+x.save.mean.only <- x.save.mean.only[!(grepl("sd", rownames(x.save.mean.only))), ]
+x.save.mean.only <- x.save.mean.only[order(-x.save.mean.only[,1], x.save.mean.only[,2]),]
+corrplot(x.save.mean.only, tl.col = "black")
+
+## Defining a new corrplot function that allows modifying the legend width
+source(path(code.dir,"mycorrplot.r"))
+mycorrplot(x.save.mean.only, tl.col = "black", cl.ratio=1)
+
+## Print
+pdf(file = path(output.dir, "corrplot_order_noSD_FINAL_legend.pdf"), width=10, height =10)
+mycorrplot(x.save.mean.only, tl.col = "black", cl.ratio=1, tl.)
+dev.off()
+
+png(file = path(output.dir, "corrplot_order_noSD_FINAL_legend_png.png"))
+mycorrplot(x.save.mean.only, tl.col = "black", cl.ratio=1)
+dev.off()
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## VARIABLE NAMES
+ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50))
+num_ill_interval <- length(ill_interval)
+num_iter <- 20
+num_nets <- 7
+net_names <- c("vegetables","eggs","meat","cheese","milk_products","poultry","milk")
+
+## EXTRACT ACC DATA
+ACC1_data <- acc_data[c(1:8),]
+ACC2_data <- acc_data[c(10:18),]
+rank_data <- t(acc_data[c(20:28),])
+
+## MAKE NUMERIC
+rank_data <- mutate_all(as.data.frame(rank_data), function(x) as.numeric(as.character(x)))
