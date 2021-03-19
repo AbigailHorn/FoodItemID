@@ -1,14 +1,17 @@
 
 # README: Code for paper
 
-[See this as a website](https://abigailhorn.github.io/FoodItemID/)
+<br>
+<br>
 
-**Network-based signal resonance for food-source identification in foodborne disease outbreaks**
+## [**See this as a website**](https://abigailhorn.github.io/FoodItemID/)
+
+<br>
+
+# Network-based signal resonance for food-source identification in foodborne disease outbreaks
 
 Abigail L. Horn^1^, Marcel Fuhrmann^2^, Tim Schlaich^3^, Andreas Balster^3^, Elena Polozova^4^, Annemarie Kaesboehrer^2^, Matthias Filter^2^, Hanno Friedrich^3^
-  
-  <br>
-  
+
 ^1^ Division of Biostatistics, Department of Preventive Medicine, University of Southern California, Los Angeles, CA, USA
 
 ^2^ Federal Institute for Risk Assessment (BfR), 10589 Berlin, Germany
@@ -21,11 +24,13 @@ Abigail L. Horn^1^, Marcel Fuhrmann^2^, Tim Schlaich^3^, Andreas Balster^3^, Ele
 
 <br>
 
-# R code
+# Using this code
+
+## R code
 
 `R` was used to compute t-test 95% confidence intervals and create Figures 4-9 in the paper.
 
-## Files 
+### Files 
 
 1. [Baseline characteristic signal resonance](index_BaselineSig_simple_plot.html): results
   - Baseline signals from simulated outbreaks: $B^{sim}_{N_i,c,k}$
@@ -41,13 +46,13 @@ Abigail L. Horn^1^, Marcel Fuhrmann^2^, Tim Schlaich^3^, Andreas Balster^3^, Ele
 
 <br>
 
-## Instructions for using R_code
+### Instructions for using R_code
 
 Knit the code in each markdown file `index____.Rmd` to reproduce analysis in each file. If the repository is built from the project file `FoodItemID.Rproj`, the working directory should not need to be set.
 
 <br>
 
-# Matlab code
+## Matlab code
 
 `Matlab` was used for all signal computations in the paper. 
 The data files for each network and outbreak are included in the `workspace.mat` file. 
@@ -76,7 +81,7 @@ The code to generate a single outbreak, apply source localization algorithm to g
 <br>
 <br>
 
-# Network models in R
+## Network models in R
 
 Please see [this GitLab repository](https://gitlab.com/DjMaFu/networkfeatures/-/tree/master) for R code for analyzing the network features of the German food supply networks, including transforming the networks into network files.
 
