@@ -1,7 +1,7 @@
 
 # README: Code for paper
 
-[See this as a website]()
+[See this as a website](https://abigailhorn.github.io/FoodItemID/)
 
 **Network-based signal resonance for food-source identification in foodborne disease outbreaks**
 
