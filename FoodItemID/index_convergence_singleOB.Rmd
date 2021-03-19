@@ -1,0 +1,292 @@
+---
+title: "Normalized signal resonance and accuracy plots for single outbreaks"
+author: "Abigail Horn"
+date: "3/18/2021"
+output: 
+    html_document:
+        toc: TRUE
+        toc_float: TRUE
+---
+
+<!--Initialize-->
+
+``` {r setup, include=FALSE}
+
+### Install necessary packages and get started
+
+library(reshape2)
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(ggrepel)
+library(bindata)
+library(odin)
+library(fitR)
+library(knitr)
+library(EasyABC)
+library(gridExtra)
+library(odin)
+library(lubridate)
+library(EasyABC)
+library(gridExtra)
+library(kableExtra)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(scales)
+library(EasyABC)
+library(patchwork)
+
+library(tidyr)
+library(readr)
+library(purrr)
+library(tibble)
+library(stringr)
+library(forcats)
+library(network)
+library(tidygraph)
+library(ggraph)
+library(visNetwork)
+library(networkD3)
+library(ggmosaic)
+library(formattable)
+library(DT)
+library(reshape)
+library(here)
+library(fs)
+library(latex2exp)
+library(MASS)
+library(plotly)
+
+lang_output <- function(x, lang) {
+  cat(c(sprintf("```%s", lang), x, "```"), sep = "\n")
+}
+r_output <- function(x) lang_output(x, "r")
+
+knitr::opts_chunk$set(
+  fig.width = 9.5,
+  fig.height = 8,
+  eval=TRUE,
+  echo=FALSE,
+  warning=FALSE,
+  cache=FALSE,
+  message=FALSE,
+  include=TRUE
+  )
+
+code.dir=here("code/")
+Germany.dir=here("data/ACC_tests/Germany/")
+RLG.dir=here("data/ACC_tests/RLG/")
+fig.dir = here("figs/")
+output.dir = here("output/")
+
+```
+
+<!--- Read in from Matlab --->
+
+```{r}
+
+## Source supporting functions
+Matlab_readin <- path(code.dir, "Matlab_readin.R")
+source(Matlab_readin)
+
+########################################################
+## Read in individual outbreak data
+
+#filename <- "convergence_singleOB_vegSim"
+#filename <- "convergence_singleOB_EHEC300"
+#filename <- "convergence_singleOB_EHEC_1000ill"
+filename <- "convergence_singleOB_EHEC_3600ill"
+#filename <- "convergence_singleOB_vegSim_1000ill"
+#filename <- "convergence_singleOB_Listeria_1000ill"
+#filename <- "convergence_singleOB_EHECstrong_300ill"
+
+readin_path <- path(Germany.dir, paste0(filename,".csv"))
+all_net_data = read.csv(readin_path, sep=",", header=FALSE) # ,stringsAsFactors = FALSE))
+all_net_data <- t(all_net_data)
+
+## Name parameters
+
+#ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50))
+#num_nets <- 7
+#net_names <- c("vegetables","eggs","meatProducts","cheese","milkProducts","poultry","milk")
+
+#ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50), seq(400,1000,by=200))
+#ill_interval <- c(1, 10, 20, 40, 60, 75)
+
+ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50), seq(400,3600,by=200))
+num_nets <- 6
+net_names <- c("vegetables","eggs","meatProducts","cheese","milkProducts","poultry")
+
+## Compute parameters
+num_iter <- nrow(all_net_data) / num_nets
+num_ill_interval <- length(ill_interval)
+
+
+## Format
+all2 <- Matlab_format(all_net_data, num_iter=num_iter, prev_max_iter=0, ill_interval)
+
+## Get CI overall and for each net, for each accuracy statistic
+CI.all2 <- get.CI(all2, by_net=1)
+
+```
+
+# 2011 STEC Outbreak
+
+## Normalized signal resonance $\overline{\Psi^{Norm}_{N_i}}(c)$
+
+```{r}
+
+plot_code <- path(code.dir, "plot_together.R")
+source(plot_code)
+
+```
+
+```{r}
+
+## Params for each of the plots
+vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  
+CI.lvl <- 0.95
+plot.mean <- 1
+
+data.in <- all2  %>% filter(num_ill != "1")   %>% filter(iter < 101) 
+y.lab.in <- "Norm-Sig"
+y.lim.in <- c(0,1)
+plot.mean=0
+p_singleOB_STEC <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                        y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+p_singleOB_STEC
+
+```
+
+
+```{r}
+
+# pdf(file = path(output.dir, "accuracy/singleOB/EHEC_3600ill_500iter.pdf"), width=10, height =10)
+# p_singleOB
+# dev.off()
+
+```
+
+## Convergence
+
+```{r}
+
+## Source supporting functions
+convergence_readin <- path(code.dir, "get_convergence.R")
+source(convergence_readin)
+
+## GET MEAN AND CI FOR EACH NETWORK AT INCREASING NUMBERS OF ITERATIONS USING STAT_SUMMARY
+
+num_iter_convg <- num_iter
+
+test.iter.idx <- c(5,seq(10,num_iter_convg,10))
+num.ill.idx <- 1000 #75
+ACC.data.in <- all2
+mean.CI.overall.ACC <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
+
+traj.CI <- mean.CI.overall.ACC
+#chart.title <- "Convergence in Norm-Sig over iterations: Vegeteables Sim-OB"
+chart.title <- "Convergence in Norm-Sig over iterations: EHEC outbreak"
+#chart.title <- "Convergence in Norm-Sig over iterations: Vegetables Sim-OB (2)"
+y.lab.in <- "Norm-Sig at 3600 illnesses"
+y.max.in <- 1
+plot.conv.ACC <- plot.together.ribbon.conv(traj.CI=traj.CI, y.lab.in=y.lab.in, y.max.in=y.max.in, chart.title=chart.title)
+plot.conv.ACC
+
+
+# pdf(file = path(output.dir, "accuracy/singleOB/conv_NormSig_EHECstrong_500iter_3600ill.pdf"), width=10, height =10)
+# plot.conv.ACC
+# dev.off()
+
+```
+
+
+
+# Simulated outbreak example on Vegetables network
+
+## Normalized signal resonance $\overline{\Psi^{Norm}_{N_i}}(c)$
+
+```{r}
+########################################################
+## Read in individual outbreak data
+
+filename <- "convergence_singleOB_vegSim_1000ill"
+
+readin_path <- path(Germany.dir, paste0(filename,".csv"))
+all_net_data = read.csv(readin_path, sep=",", header=FALSE) # ,stringsAsFactors = FALSE))
+all_net_data <- t(all_net_data)
+
+## Name parameters
+
+#ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50))
+#num_nets <- 7
+#net_names <- c("vegetables","eggs","meatProducts","cheese","milkProducts","poultry","milk")
+
+ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50), seq(400,1000,by=200))
+#ill_interval <- c(1, 10, 20, 40, 60, 75)
+
+#ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50), seq(400,3600,by=200))
+num_nets <- 6
+net_names <- c("vegetables","eggs","meatProducts","cheese","milkProducts","poultry")
+
+## Compute parameters
+num_iter <- nrow(all_net_data) / num_nets
+num_ill_interval <- length(ill_interval)
+
+
+## Format
+all2 <- Matlab_format(all_net_data, num_iter=num_iter, prev_max_iter=0, ill_interval)
+
+## Get CI overall and for each net, for each accuracy statistic
+CI.all2 <- get.CI(all2, by_net=1)
+
+## Params for each of the plots
+vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  
+CI.lvl <- 0.95
+plot.mean <- 1
+
+data.in <- all2  %>% filter(num_ill != "1")   %>% filter(iter < 101) 
+y.lab.in <- "Norm-Sig"
+y.lim.in <- c(0,1)
+plot.mean=0
+p_singleOB_VegSimEx <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                        y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+p_singleOB_VegSimEx
+
+
+```
+
+
+## Convergence
+
+```{r}
+
+## Source supporting functions
+convergence_readin <- path(code.dir, "get_convergence.R")
+source(convergence_readin)
+
+## GET MEAN AND CI FOR EACH NETWORK AT INCREASING NUMBERS OF ITERATIONS USING STAT_SUMMARY
+
+num_iter_convg <- num_iter
+
+test.iter.idx <- c(5,seq(10,num_iter_convg,10))
+num.ill.idx <- 1000 #75
+ACC.data.in <- all2
+mean.CI.overall.ACC <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
+
+traj.CI <- mean.CI.overall.ACC
+#chart.title <- "Convergence in Norm-Sig over iterations: Vegeteables Sim-OB"
+chart.title <- "Convergence in Norm-Sig over iterations: EHEC outbreak"
+#chart.title <- "Convergence in Norm-Sig over iterations: Vegetables Sim-OB (2)"
+y.lab.in <- "Norm-Sig at 3600 illnesses"
+y.max.in <- 1
+plot.conv.ACC <- plot.together.ribbon.conv(traj.CI=traj.CI, y.lab.in=y.lab.in, y.max.in=y.max.in, chart.title=chart.title)
+plot.conv.ACC
+
+
+# pdf(file = path(output.dir, "accuracy/singleOB/conv_NormSig_EHECstrong_500iter_3600ill.pdf"), width=10, height =10)
+# plot.conv.ACC
+# dev.off()
+
+```

@@ -1,0 +1,22 @@
+name: "FoodItemID-code"
+output_dir: "."
+navbar:
+  title: "Network-based signal resonance for food-source identification in foodborne disease outbreaks"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Baseline Signals"
+      href: index_BaselineSig_simple_plot.html
+    - text: "Simulated Signal"
+      href: index_AccPlots_raw.html
+    - text: "Normalized Signal Accuracy"
+      href: index_SimSigR_convergence.html
+    - text: "Single Outbreaks"
+      href: index_convergence_singleOB.html
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/USCbiostats/PM566
+output:
+  html_document:
+    theme: cosmo
+    css: styles.css

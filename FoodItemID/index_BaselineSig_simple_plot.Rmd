@@ -1,0 +1,194 @@
+---
+title: "Baseline characteristic signal resonance"
+author: "Abigail Horn"
+date: "3/18/2021"
+output: 
+    html_document:
+        toc: TRUE
+        toc_float: TRUE
+---
+
+- Baseline signals from simulated outbreaks: $B^{sim}_{N_i,c,k}$
+
+- Baseline signals from random sampled outbreaks: $B^{rand}_{N_i,c,k}$
+
+<!--Initialize-->
+
+``` {r setup, include=FALSE}
+
+### Install necessary packages and get started
+
+library(reshape2)
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(ggrepel)
+library(bindata)
+library(odin)
+library(fitR)
+library(knitr)
+library(EasyABC)
+library(gridExtra)
+library(odin)
+library(lubridate)
+library(EasyABC)
+library(gridExtra)
+library(kableExtra)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(scales)
+library(EasyABC)
+library(patchwork)
+
+library(tidyr)
+library(readr)
+library(purrr)
+library(tibble)
+library(stringr)
+library(forcats)
+library(network)
+library(tidygraph)
+library(ggraph)
+library(visNetwork)
+library(networkD3)
+library(ggmosaic)
+library(formattable)
+library(DT)
+library(reshape)
+library(here)
+library(fs)
+library(latex2exp)
+library(MASS)
+library(plotly)
+
+lang_output <- function(x, lang) {
+  cat(c(sprintf("```%s", lang), x, "```"), sep = "\n")
+}
+r_output <- function(x) lang_output(x, "r")
+
+knitr::opts_chunk$set(
+  fig.width = 9.5,
+  fig.height = 8,
+  eval=TRUE,
+  echo=FALSE,
+  warning=FALSE,
+  cache=FALSE,
+  message=FALSE,
+  include=TRUE
+  )
+
+code.dir=here("code/")
+Germany.dir=here("data/ACC_tests/Germany/")
+RLG.dir=here("data/ACC_tests/RLG/")
+fig.dir = here("figs/")
+output.dir = here("output/")
+data.dir=here("data/")
+
+```
+
+
+<!--- Get mean and sd of baseline sigs: simulated and rand --->
+
+```{r}
+
+# fn_t_readin_path <- path(data.dir, "fn_t_readin.csv")
+# fn_t_readin = as.data.frame(read.csv(fn_t_readin_path, sep=",",stringsAsFactors = FALSE))
+
+get.sig.fn <- function(sig_readin_path, iter=1000){
+  
+  #sig_readin_path <- sig_rand_readin_path
+  #iter = 100
+  sig_data = read.csv(sig_readin_path, sep=",", header = FALSE)
+  colnames(sig_data) = c("foodnet","num_ill",c(1:iter))
+  sig.traj <- reshape2::melt(sig_data, measure.vars = c(3:ncol(sig_data)), variable.name = "iter")
+  
+  return(sig.traj)
+  
+}
+
+sig_sim_readin_path <- path(data.dir, "BaselineSig_out/BaselineSig_Germany_WHS_Simul.csv")
+sig_sim.traj <- get.sig.fn(sig_readin_path=sig_sim_readin_path, iter=1000)
+
+sig_rand_readin_path <- path(data.dir, "BaselineSig_out/BaselineSig_Germany_WHS_Samp.csv")
+sig_rand.traj <- get.sig.fn(sig_readin_path=sig_rand_readin_path, iter=1000)
+
+```
+
+
+
+<!--- Create plots --->
+
+```{r}
+plot_code <- path(code.dir, "plot_together.R")
+source(plot_code)
+```
+
+# Simulated baseline signal $B^{sim}_{N_i}$
+
+```{r}
+
+## Params for each of the plots
+vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  
+CI.lvl <- 0.95
+plot.mean <- 1
+
+data.in <- sig_sim.traj  # %>% filter(num_ill != "1")   %>% filter(iter < 101) 
+y.lab.in <- "$B^{sim}_{N_i}$"
+y.lim.in <- c(.1156,.11585)
+plot.mean=0
+p_singleOB <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                        y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+#p_singleOB
+
+```
+
+<!--- Print this single outbreak --->
+
+```{r}
+
+#pdf(file = path(output.dir, "baseline2/BaselineSigSIM.pdf"), width=10, height =10)
+p_singleOB
+#dev.off()
+
+```
+
+
+# Random baseline signal $B^{rand}_{N_i}$
+
+```{r}
+
+## Params for each of the plots
+vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  
+CI.lvl <- 0.95
+plot.mean <- 1
+
+data.in <- sig_rand.traj  # %>% filter(num_ill != "1")   %>% filter(iter < 101) 
+y.lab.in <- "$B^{rand}_{N_i}$"
+#y.lim.in <- c(.1156,.11585)
+y.lim.in <- c(.115595,.11563)
+plot.mean=0
+p_singleOB <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                        y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+#p_singleOB
+
+```
+
+<!--- Print this single outbreak --->
+
+```{r}
+
+#pdf(file = path(output.dir, "baseline2/BaselineSigRAND_zoomIN.pdf"), width=10, height =10)
+p_singleOB
+#dev.off()
+
+```
+
+
+
+
+
+
+
+
+
