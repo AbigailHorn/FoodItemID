@@ -180,6 +180,7 @@ CI.SigStarHat_all <- get.CI(SigStarHat_data_full, by_net=0)
 ```
 
 
+## Accuracy plots
 
 ```{r}
 
@@ -188,11 +189,97 @@ source(plot_code)
 
 ```
 
-## Accuracy metric plots
 
-```{r include=FALSE}
+### Accuracy plots: Mean over all networks
 
-x.lab.in <- expression(paste("Number illness cases ",italic("c")))  #"Number illness cases $c$"
+```{r}
+
+vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  
+CI.lvl <- 0.95
+
+data.in <- rank_data_full 
+y.lab.in <- "Rank (out of 6)"
+y.lim.in <- c(1, 3)
+p_rank_overall <- plot.overall.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, y.lab.in=y.lab.in, y.lim.in=y.lim.in)
+
+data.in <- ACC2_data_full 
+y.lab.in <- "Accuracy"
+y.lim.in <- c(0.5, 1)
+p_ACC_overall <- plot.overall.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, y.lab.in=y.lab.in, y.lim.in=y.lim.in)
+
+data.in <- SigStar_data_full 
+y.lab.in <- "Norm-Sig $N^{*}$"
+y.lim.in <- c(0.65, 1)
+p_SigStar_overall <- plot.overall.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, y.lab.in=y.lab.in, y.lim.in=y.lim.in)
+
+data.in <- SigStarHat_data_full 
+y.lab.in <- "Norm-Sig $\\hat{N}$"
+y.lim.in <- c(0.65, 1)
+p_SigStarHat_overall <- plot.overall.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, y.lab.in=y.lab.in, y.lim.in=y.lim.in)
+
+#(p_rank_overall + p_ACC_overall) / (p_SigStar_overall + p_SigStarHat_overall) + plot_layout(guides = "collect") 
+
+
+```
+
+
+## Accuracy plots by network WITHOUT overall
+
+### Create plots
+
+```{r}
+
+## Params for each of the plots
+vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  
+CI.lvl <- 0.5
+plot.mean <- 0
+
+data.in <- rank_data_full 
+y.lab.in <- "Rank (out of 6)"
+y.lim.in <- c(1, 3)
+p_rank_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                        y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+data.in <- ACC2_data_full 
+y.lab.in <- "Accuracy"
+y.lim.in <- c(0.5, 1)
+p_ACC_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                       y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+data.in <- SigStar_data_full 
+y.lab.in <- "Norm-Sig $N^{*}$"
+y.lim.in <- c(0.65, 1)
+p_SigStar_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                           y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+data.in <- SigStarHat_data_full 
+y.lab.in <- "Norm-Sig $\\hat{N}$"
+y.lim.in <- c(0.65, 1)
+p_SigStarHat_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                              y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+```
+
+### Print accuracy metric plots for each network next to overall
+
+```{r}
+
+(p_rank_overall + p_rank_together) / (p_ACC_overall + p_ACC_together) / (p_SigStar_overall + p_SigStar_together) / (p_SigStarHat_overall + p_SigStarHat_together) + plot_layout(guides = "collect") 
+
+# pdf(file = path(output.dir, "accuracy/without_mean.pdf"), width=10, height =10)
+# 
+# (p_rank_overall + p_rank_together) / (p_ACC_overall + p_ACC_together) / (p_SigStar_overall + p_SigStar_together) / (p_SigStarHat_overall + p_SigStarHat_together) + plot_layout(guides = "collect")
+# 
+# dev.off()
+
+```
+
+
+## Accuracy plots by network WITH overall
+
+### Create plots
+
+```{r}
 
 ## Params for each of the plots
 vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  
@@ -200,17 +287,17 @@ CI.lvl <- 0.95
 plot.mean <- 1
 
 data.in <- rank_data_full 
-y.lab.in <- "rank of $\\mathit{N^*}$ (out of 6)"
+y.lab.in <- "Rank (out of 6)"
 y.lim.in <- c(1, 4)
 p_rank_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                        x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+                                        y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
 
 data.in <- ACC2_data_full 
-y.lab.in <- "accuracy" #(rank $N^{*} \\leq 2$)" # Accuracy
+y.lab.in <- "Accuracy" #(rank $N^{*} \\leq 2$)" # Accuracy
 y.lim.in <- c(0, 1)
 #y.lim.in <- c(0, 1)
 p_ACC_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                       x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+                                       y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
 
 data.in <- SigStar_data_full 
 y.lab.in <- "$\\Psi^{norm}_{N^*}$"  #"Norm-Sig $N^{*}$" #"Norm-Sig $N^{*}$"
@@ -218,7 +305,7 @@ y.lab.in <- "$\\Psi^{norm}_{N^*}$"  #"Norm-Sig $N^{*}$" #"Norm-Sig $N^{*}$"
 y.lim.in <- c(0,1.55)
 #y.lim.in <- c(0,.01)
 p_SigStar_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                           x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+                                           y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
 
 data.in <- SigStarHat_data_full 
 y.lab.in <- "$\\Psi^{norm}_{N^*}$"  #"Norm-Sig $\\hat{N}$" #"Norm-Sig $\\hat{N}$"
@@ -226,17 +313,62 @@ y.lab.in <- "$\\Psi^{norm}_{N^*}$"  #"Norm-Sig $\\hat{N}$" #"Norm-Sig $\\hat{N}$
 y.lim.in <- c(0,1.55)
 #y.lim.in <- c(0,.01)
 p_SigStarHat_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                              x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+                                              y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
 
 p_SigStar_together + p_SigStarHat_together + p_rank_together + p_ACC_together + plot_layout(guides="collect")
 
 ```
 
+### Print accuracy metric plots for each network WITH overall
 
-<!---Convergence--->
+```{r}
+
+#p_rank_together + p_ACC_together + p_SigStar_together + p_SigStarHat_together + plot_layout(guides="collect")
+
+pdf(file = path(output.dir, "accuracy/final/Germany_NormSig_FREE_650ob_CI95.pdf"), width=10, height =10)
+
+p_rank_together + p_ACC_together + p_SigStar_together + p_SigStarHat_together + plot_layout(guides="collect")
+
+dev.off()
+
+```
 
 
-<!---accuracy---> 
+## SigStarHat - SigStar
+
+```{r}
+
+SigStar_join <- SigStar_data_full
+SigStar_join$SigStar <- SigStar_join$value
+SigStar_join$value <- NULL
+
+SigStar_join <- cbind(SigStar_join, SigStarHat_data_full$value)
+SigStar_join$"SigStarHat" <- SigStar_join[,5]
+SigStar_join[,5] <- NULL
+
+SigStar_join$value <- SigStar_join$SigStar / SigStar_join$SigStarHat
+
+
+vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  
+CI.lvl <- 0.5
+# data.in <- SigStar_join 
+# y.lab.in <- "Difference"
+# y.lim.in <- c(0, .15)
+# p_SigStar_diff <- plot.overall.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, y.lab.in=y.lab.in, y.lim.in=y.lim.in)
+# p_SigStar_diff
+data.in <- SigStar_join 
+y.lab.in <- "Norm-Sig error ($\\hat{N} - N^{*}$)"
+y.lim.in <- c(0, 1)
+p_SigStar_diff <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                       y.lab.in=y.lab.in, y.lim.in=y.lim.in, plot.mean=1)
+p_SigStar_diff
+
+pdf(file = path(output.dir, "accuracy/NormSig_error.pdf"), width=10, height =10)
+p_SigStar_diff
+dev.off()
+
+```
+
 ```{r}
 
 ## Source supporting functions
@@ -253,20 +385,16 @@ ACC.data.in <- ACC2_data_full
 #ACC.data.in <- rank_data_full
 mean.CI.overall.ACC <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
 
-for (i in 1:nrow(mean.CI.overall.ACC)){
-  if (mean.CI.overall.ACC$ymax[i] > 1) mean.CI.overall.ACC$ymax[i] = 1
-}
-```
-
-```{r}
+# for (i in 1:nrow(mean.CI.overall.ACC)){
+#   if (mean.CI.overall.ACC$ymax[i] > 1) mean.CI.overall.ACC$ymax[i] = 1
+# }
 
 traj.CI <- mean.CI.overall.ACC
-
-x.lab.in <- expression(paste("Number iterations ",italic("m")))  #"Number illness cases $c$"
-y.lab.in <- "convergence in accuracy at $\\mathit{c'=300}$"
+#chart.title <- "Convergence in rank of Norm-Sig"
+chart.title <- "Convergence in accuracy of Norm-Sig"
+y.lab.in <- "Accuracy"
 y.max.in <- 1
-plot.conv.ACC <- plot.together.ribbon.conv(traj.CI=traj.CI, x.lab.in=x.lab.in, y.lab.in=y.lab.in, 
-                                           y.lim.in=c(0,1), y.max.in=y.max.in)
+plot.conv.ACC <- plot.together.ribbon.conv(traj.CI=traj.CI, y.lab.in=y.lab.in, y.max.in=y.max.in, chart.title=chart.title)
 plot.conv.ACC
 
 # pdf(file = path(output.dir, "accuracy/final/conv_NormSigRank_650ob_CI95.pdf"), width=10, height =10)
@@ -276,8 +404,6 @@ plot.conv.ACC
 ```
 
 
-
-<!---rank---> 
 ```{r}
 
 ## Source supporting functions
@@ -292,23 +418,19 @@ test.iter.idx <- c(seq(10,nr_ob_convg,10))
 num.ill.idx <- 300
 #ACC.data.in <- ACC2_data_full
 ACC.data.in <- rank_data_full
-mean.CI.overall.rank <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
+mean.CI.overall.ACC <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
 
 # for (i in 1:nrow(mean.CI.overall.ACC)){
 #   if (mean.CI.overall.ACC$ymax[i] > 1) mean.CI.overall.ACC$ymax[i] = 1
 # }
 
-```
-
-```{r}
-
-traj.CI <- mean.CI.overall.rank
-x.lab.in <- expression(paste("Number iterations ",italic("m")))  #"Number illness cases $c$"
-y.lab.in <- "convergence in rank at $\\mathit{c'=300}$"
+traj.CI <- mean.CI.overall.ACC
+chart.title <- "Convergence in rank of Norm-Sig"
+#chart.title <- "Convergence in accuracy of Norm-Sig"
+y.lab.in <- "Accuracy at 300 illnesses"
 y.max.in <- 4
-plot.conv.rank <- plot.together.ribbon.conv(traj.CI=traj.CI, x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.max.in=y.max.in,
-                                            y.lim.in=c(0,4))
-plot.conv.rank
+plot.conv.rank <- plot.together.ribbon.conv(traj.CI=traj.CI, y.lab.in=y.lab.in, y.max.in=y.max.in, chart.title=chart.title)
+
 
 # pdf(file = path(output.dir, "accuracy/final/conv_NormSigRank_650ob_CI95.pdf"), width=10, height =10)
 # plot.conv.ACC
@@ -317,19 +439,10 @@ plot.conv.rank
 ```
 
 
-
 ```{r}
 
-pdf(file = path(output.dir, "figure_update/accuracyMetrics.pdf"), width=10, height=10)
-
-(p_rank_together + p_ACC_together) / (plot.conv.rank + plot.conv.ACC) + 
-  plot_layout(guides = "collect") + plot_annotation(tag_levels = 'a') & 
-  theme(plot.tag = element_text(size = 20))
-
-dev.off()
+plot.conv.rank + plot.conv.rank 
 
 ```
-
-
 
 

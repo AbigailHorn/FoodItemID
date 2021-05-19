@@ -1,7 +1,7 @@
 ---
 title: "Simulated Signal Relative to Random Plots"
 author: "Abigail Horn"
-date: "3/18/2021"
+date: "5/18/2021"
 output: 
     html_document:
         toc: TRUE
@@ -239,19 +239,20 @@ vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",  
 CI.lvl <- 0.95
 plot.mean <- 1
 filter.iter<- 601
+x.lab.in <- expression(paste("Number illness cases ",italic("c")))  #"Number illness cases $c$"
 
 data.in <- rank_data_full  %>% filter(iter<filter.iter)
 y.lab.in <- "Rank (out of 6)"
 y.lim.in <- c(1, 4)
 p_rank_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                        y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+                                        x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
 
 data.in <- ACC2_data_full %>% filter(iter<filter.iter)
 y.lab.in <- "Accuracy"
 y.lim.in <- c(0, 1)
 #y.lim.in <- c(0, 1)
 p_ACC_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                       y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+                                       x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
 
 data.in <- SigStar_data_full %>% filter(iter<filter.iter)
 y.lab.in <- "Sim-Sig $N^{*}$" #"Norm-Sig $N^{*}$"
@@ -259,7 +260,7 @@ y.lab.in <- "Sim-Sig $N^{*}$" #"Norm-Sig $N^{*}$"
 #y.lim.in <- c(0,1.5)
 y.lim.in <- c(0,.0075)
 p_SigStar_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                           y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+                                           x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
 
 data.in <- SigStarHat_data_full %>% filter(iter<filter.iter)
 y.lab.in <- "Sim-Sig $\\hat{N}$" #"Norm-Sig $\\hat{N}$"
@@ -267,7 +268,7 @@ y.lab.in <- "Sim-Sig $\\hat{N}$" #"Norm-Sig $\\hat{N}$"
 #y.lim.in <- c(0,1.5)
 y.lim.in <- c(0,.0075)
 p_SigStarHat_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                              y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+                                              x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
 
 #p_rank_together + p_ACC_together + p_SigStar_together + p_SigStarHat_together + plot_layout(guides="collect")
 
@@ -279,18 +280,19 @@ p_SigStarHat_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.
 ```{r}
 
 data.in <- SigStar_data_full %>% filter(iter<601)
-y.lab.in <- "Sim-Sig $N^{*}$" #"Norm-Sig $N^{*}$"
+x.lab.in <- expression(paste("Number illness cases ",italic("c")))  #"Number illness cases $c$"
+y.lab.in <- "simulated signal relative to random $\\mathit{\\psi^{sim}_{N_i}}$"
 #y.lim.in <- c(0.65, 1)
 #y.lim.in <- c(0,1.5)
 y.lim.in <- c(0,.0075)
-p_SigStar_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                           y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+SimSig <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                           x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
 
-p_SigStar_together
+SimSig
 
-pdf(file = path(output.dir, "accuracy/final/Germany_SimSig_600ob_CI95.pdf"), width=10, height =10)
-p_SigStar_together
-dev.off()
+# pdf(file = path(output.dir, "accuracy/final/Germany_SimSig_600ob_CI95.pdf"), width=10, height =10)
+# p_SigStar_together
+# dev.off()
 
 ```
 
@@ -312,16 +314,36 @@ num.ill.idx <- 300
 ACC.data.in <- SigStar_data_full
 mean.CI.overall.SigStar <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
 
+```
+
+```{r}
+
+######## GET PLOT
+
 traj.CI <- mean.CI.overall.SigStar
 chart.title <- "Convergence in Sim-Sig over simulations"
-y.lab.in <- "Sim-Sig at 300 illnesses"
+x.lab.in <- expression(paste("Number iterations ",italic("m")))  #"Number illness cases $c$"
+y.lab.in <- "convergence in $\\mathit{\\psi^{sim}_{N_i,c'=300}}$"
 y.max.in <- .0075
-plot.conv.ACC <- plot.together.ribbon.conv(traj.CI=traj.CI, y.lab.in=y.lab.in, y.max.in=y.max.in, chart.title=chart.title)
-plot.conv.ACC
+y.lim.in <- c(0,.0075)
+
+
+SimSig.conv <- plot.together.ribbon.conv(traj.CI=traj.CI, x.lab.in=x.lab.in, y.lim.in=y.lim.in, y.lab.in=y.lab.in, y.max.in=y.max.in)
+SimSig.conv
 # 
 # pdf(file = path(output.dir, "accuracy/final/conv_SimSig_600ob_CI95.pdf"), width=10, height =10)
 # plot.conv.ACC
 # dev.off()
+
+```
+
+
+```{r include = FALSE}
+  
+#pdf(file = path(output.dir, "figure_update/SimSig_and_convergence.pdf"), width=12, height =5)
+SimSig + SimSig.conv + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'a') & 
+  theme(plot.tag = element_text(size = 20))
+#dev.off()
 
 ```
 

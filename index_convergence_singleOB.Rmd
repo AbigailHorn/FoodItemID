@@ -1,7 +1,7 @@
 ---
 title: "Normalized signal resonance and accuracy plots for single outbreaks"
 author: "Abigail Horn"
-date: "3/18/2021"
+date: "5/18/2021"
 output: 
     html_document:
         toc: TRUE
@@ -131,9 +131,9 @@ CI.all2 <- get.CI(all2, by_net=1)
 
 ```
 
-# 2011 STEC Outbreak
+## 2011 STEC Outbreak {.tabset}
 
-## Normalized signal resonance $\overline{\Psi^{Norm}_{N_i}}(c)$
+### Normalized signal resonance $\overline{\Psi^{Norm}_{N_i}}(c)$
 
 ```{r}
 
@@ -150,68 +150,80 @@ CI.lvl <- 0.95
 plot.mean <- 1
 
 data.in <- all2  %>% filter(num_ill != "1")   %>% filter(iter < 101) 
-y.lab.in <- "Norm-Sig"
+
+include.title = "STEC O104:H4 Outbreak"
+x.lab.in <- expression(paste("Number illness cases ",italic("c")))  #"Number illness cases $c$"
+y.lab.in <- "Normalized signal resonance $\\mathit{\\Psi^{norm}_{N_i}}$"
 y.lim.in <- c(0,1)
 plot.mean=0
-p_singleOB_STEC <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                        y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
-p_singleOB_STEC
+singleOB_STEC <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                        x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,
+                                      plot.mean=plot.mean, include.title=include.title)
+singleOB_STEC
+
+```
+
+
+```{r include=FALSE}
+
+#pdf(file = path(output.dir, "figure_update/EHEC_3600ill.pdf"), width=7, height =6)
+singleOB_STEC + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'a') & 
+  theme(plot.tag = element_text(size = 20)) 
+#dev.off()
 
 ```
 
 
 ```{r}
 
-# pdf(file = path(output.dir, "accuracy/singleOB/EHEC_3600ill_500iter.pdf"), width=10, height =10)
-# p_singleOB
-# dev.off()
-
-```
-
-## Convergence
-
-```{r}
-
-## Source supporting functions
-convergence_readin <- path(code.dir, "get_convergence.R")
-source(convergence_readin)
-
-## GET MEAN AND CI FOR EACH NETWORK AT INCREASING NUMBERS OF ITERATIONS USING STAT_SUMMARY
-
-num_iter_convg <- num_iter
-
-test.iter.idx <- c(5,seq(10,num_iter_convg,10))
-num.ill.idx <- 1000 #75
-ACC.data.in <- all2
-mean.CI.overall.ACC <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
-
-traj.CI <- mean.CI.overall.ACC
-#chart.title <- "Convergence in Norm-Sig over iterations: Vegeteables Sim-OB"
-chart.title <- "Convergence in Norm-Sig over iterations: EHEC outbreak"
-#chart.title <- "Convergence in Norm-Sig over iterations: Vegetables Sim-OB (2)"
-y.lab.in <- "Norm-Sig at 3600 illnesses"
-y.max.in <- 1
-plot.conv.ACC <- plot.together.ribbon.conv(traj.CI=traj.CI, y.lab.in=y.lab.in, y.max.in=y.max.in, chart.title=chart.title)
-plot.conv.ACC
-
-
-# pdf(file = path(output.dir, "accuracy/singleOB/conv_NormSig_EHECstrong_500iter_3600ill.pdf"), width=10, height =10)
+# ## Source supporting functions
+# convergence_readin <- path(code.dir, "get_convergence.R")
+# source(convergence_readin)
+# 
+# ## GET MEAN AND CI FOR EACH NETWORK AT INCREASING NUMBERS OF ITERATIONS USING STAT_SUMMARY
+# 
+# num_iter_convg <- num_iter
+# 
+# test.iter.idx <- c(5,seq(10,num_iter_convg,10))
+# num.ill.idx <- 1000 #75
+# ACC.data.in <- all2
+# mean.CI.overall.ACC <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
+# 
+# traj.CI <- mean.CI.overall.ACC
+# #chart.title <- "Convergence in Norm-Sig over iterations: Vegeteables Sim-OB"
+# chart.title <- "Convergence in Norm-Sig over iterations: EHEC outbreak"
+# #chart.title <- "Convergence in Norm-Sig over iterations: Vegetables Sim-OB (2)"
+# y.lab.in <- "Norm-Sig at 3600 illnesses"
+# y.max.in <- 1
+# plot.conv.ACC <- plot.together.ribbon.conv(traj.CI=traj.CI, y.lab.in=y.lab.in, y.max.in=y.max.in, chart.title=chart.title)
 # plot.conv.ACC
-# dev.off()
+# 
+# 
+# # pdf(file = path(output.dir, "accuracy/singleOB/conv_NormSig_EHECstrong_500iter_3600ill.pdf"), width=10, height =10)
+# # plot.conv.ACC
+# # dev.off()
 
 ```
 
 
 
-# Simulated outbreak example on Vegetables network
+## Simulated outbreak examples on Vegetables network {.tabset}
 
-## Normalized signal resonance $\overline{\Psi^{Norm}_{N_i}}(c)$
+### Examples A and B
 
-```{r}
+**Normalized signal resonance** $\overline{\Psi^{Norm}_{N_i}}(c)$
+
+```{r include=FALSE}
 ########################################################
 ## Read in individual outbreak data
 
+#filename <- "convergence_singleOB_vegSim"
+#filename <- "convergence_singleOB_EHEC300"
+#filename <- "convergence_singleOB_EHEC_1000ill"
+#filename <- "convergence_singleOB_EHEC_3600ill"
 filename <- "convergence_singleOB_vegSim_1000ill"
+#filename <- "convergence_singleOB_Listeria_1000ill"
+#filename <- "convergence_singleOB_EHECstrong_300ill"
 
 readin_path <- path(Germany.dir, paste0(filename,".csv"))
 all_net_data = read.csv(readin_path, sep=",", header=FALSE) # ,stringsAsFactors = FALSE))
@@ -246,21 +258,23 @@ vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",  
 CI.lvl <- 0.95
 plot.mean <- 1
 
-data.in <- all2  %>% filter(num_ill != "1")   %>% filter(iter < 101) 
-y.lab.in <- "Norm-Sig"
+data.in <- all2  %>% filter(num_ill != "1")   %>% filter(iter < 501) 
+
+include.title = "Example A"
+x.lab.in <- expression(paste("Number illness cases ",italic("c")))  #"Number illness cases $c$"
+y.lab.in <- "Normalized signal resonance $\\mathit{\\Psi^{norm}_{N_i}}$"
 y.lim.in <- c(0,1)
 plot.mean=0
-p_singleOB_VegSimEx <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                        y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
-p_singleOB_VegSimEx
 
+singleOB_VegSimLow <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                        x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean,
+                                        include.title=include.title)
+#singleOB_VegSimLow
 
 ```
 
 
-## Convergence
-
-```{r}
+```{r include=FALSE}
 
 ## Source supporting functions
 convergence_readin <- path(code.dir, "get_convergence.R")
@@ -273,20 +287,152 @@ num_iter_convg <- num_iter
 test.iter.idx <- c(5,seq(10,num_iter_convg,10))
 num.ill.idx <- 1000 #75
 ACC.data.in <- all2
-mean.CI.overall.ACC <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
+Example.A.conv <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
+```
 
-traj.CI <- mean.CI.overall.ACC
-#chart.title <- "Convergence in Norm-Sig over iterations: Vegeteables Sim-OB"
-chart.title <- "Convergence in Norm-Sig over iterations: EHEC outbreak"
-#chart.title <- "Convergence in Norm-Sig over iterations: Vegetables Sim-OB (2)"
-y.lab.in <- "Norm-Sig at 3600 illnesses"
+
+```{r include=FALSE}
+
+traj.CI <- Example.A.conv
+include.title = "Example A Convergence"
+x.lab.in <- expression(paste("Number iterations ",italic("m")))  #"Number illness cases $c$"
+y.lab.in <- "convergence in $\\mathit{\\Psi^{norm}_{N_i,c'=1000}}$"
 y.max.in <- 1
-plot.conv.ACC <- plot.together.ribbon.conv(traj.CI=traj.CI, y.lab.in=y.lab.in, y.max.in=y.max.in, chart.title=chart.title)
-plot.conv.ACC
-
+singleOB_VegSimLow_conv <- plot.together.ribbon.conv(traj.CI=traj.CI, x.lab.in=x.lab.in, y.lab.in=y.lab.in,
+                                                     y.max.in=y.max.in,
+                                                     y.lim.in=c(0,1),
+                                                     include.title=include.title)
+#singleOB_VegSimLow_conv
 
 # pdf(file = path(output.dir, "accuracy/singleOB/conv_NormSig_EHECstrong_500iter_3600ill.pdf"), width=10, height =10)
 # plot.conv.ACC
 # dev.off()
 
 ```
+
+
+
+
+
+<!---
+### Example B
+
+**Normalized signal resonance** $\overline{\Psi^{Norm}_{N_i}}(c)$
+--->
+
+```{r include=FALSE}
+########################################################
+## Read in individual outbreak data
+
+#filename <- "convergence_singleOB_vegSim"
+#filename <- "convergence_singleOB_EHEC300"
+#filename <- "convergence_singleOB_EHEC_1000ill"
+#filename <- "convergence_singleOB_EHEC_3600ill"
+#filename <- "convergence_singleOB_vegSim_1000ill"
+#filename <- "convergence_singleOB_Listeria_1000ill"
+filename <- "convergence_singleOB_EHECstrong_300ill"
+
+readin_path <- path(Germany.dir, paste0(filename,".csv"))
+all_net_data = read.csv(readin_path, sep=",", header=FALSE) # ,stringsAsFactors = FALSE))
+all_net_data <- t(all_net_data)
+
+## Name parameters
+
+#ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50))
+# num_nets <- 7
+# net_names <- c("vegetables","eggs","meatProducts","cheese","milkProducts","poultry","milk")
+
+ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50)) #, seq(400,1000,by=200))
+#ill_interval <- c(1, 10, 20, 40, 60, 75)
+
+#ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50), seq(400,3600,by=200))
+num_nets <- 6
+net_names <- c("vegetables","eggs","meatProducts","cheese","milkProducts","poultry")
+
+## Compute parameters
+num_iter <- nrow(all_net_data) / num_nets
+num_ill_interval <- length(ill_interval)
+
+
+## Format
+all2 <- Matlab_format(all_net_data, num_iter=num_iter, prev_max_iter=0, ill_interval)
+
+## Get CI overall and for each net, for each accuracy statistic
+CI.all2 <- get.CI(all2, by_net=1)
+
+## Params for each of the plots
+vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  
+CI.lvl <- 0.95
+plot.mean <- 1
+
+data.in <- all2  %>% filter(num_ill != "1")   %>% filter(iter < 501) 
+
+include.title = "Example B"
+x.lab.in <- expression(paste("Number illness cases ",italic("c")))  #"Number illness cases $c$"
+y.lab.in <- "Normalized signal resonance $\\mathit{\\Psi^{norm}_{N_i}}$"
+y.lim.in <- c(0,2.5)
+plot.mean=0
+
+singleOB_VegSimHigh <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                        x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean,
+                                        include.title=include.title)
+#singleOB_VegSimHigh
+
+```
+
+**Convergence**
+
+```{r include=FALSE}
+
+## Source supporting functions
+convergence_readin <- path(code.dir, "get_convergence.R")
+source(convergence_readin)
+
+## GET MEAN AND CI FOR EACH NETWORK AT INCREASING NUMBERS OF ITERATIONS USING STAT_SUMMARY
+
+num_iter_convg <- num_iter
+
+test.iter.idx <- c(5,seq(10,num_iter_convg,10))
+num.ill.idx <- 300 #75
+ACC.data.in <- all2
+Example.B.conv <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
+```
+
+
+```{r include=FALSE}
+
+traj.CI <- Example.B.conv
+include.title = "Example B Convergence"
+x.lab.in <- expression(paste("Number iterations ",italic("m")))  #"Number illness cases $c$"
+y.lab.in <- "convergence in $\\mathit{\\Psi^{norm}_{N_i,c'=300}}$"
+
+y.max.in <- 1
+singleOB_VegSimHigh_conv <- plot.together.ribbon.conv(traj.CI=traj.CI, x.lab.in=x.lab.in, 
+                                                     y.lab.in=y.lab.in, y.max.in=y.max.in,
+                                                     y.lim.in=c(0,2.5),
+                                                     include.title=include.title)
+#singleOB_VegSimHigh_conv
+
+# pdf(file = path(output.dir, "accuracy/singleOB/conv_NormSig_EHECstrong_500iter_3600ill.pdf"), width=10, height =10)
+# plot.conv.ACC
+# dev.off()
+
+```
+
+
+
+```{r}
+
+#pdf(file = path(output.dir, "figure_update/exampleOB.pdf"), width=10, height=10)
+
+(singleOB_VegSimLow + singleOB_VegSimHigh) / (singleOB_VegSimLow_conv + singleOB_VegSimHigh_conv) + 
+  plot_layout(guides = "collect") + plot_annotation(tag_levels = 'a') & 
+  theme(plot.tag = element_text(size = 20))
+
+#dev.off()
+
+```
+
+
+
+

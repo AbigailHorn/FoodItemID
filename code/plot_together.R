@@ -15,6 +15,12 @@
 
 plot.overall.ribbon <- function(data.in, vars.to.plot, CI.lvl, y.lab.in, y.lim.in){
   
+  my_theme=theme(legend.title = element_blank() , 
+                 axis.title.x = element_text(size = 16), 
+                 axis.text.x = element_text(size = 12), 
+                 axis.title.y = element_text(size = 16),
+                 axis.text.y = element_text(size = 12))
+  
   ## Select vars.to.plot
   data <- data.in %>% filter (foodnet %in% vars.to.plot)
   data$num_ill <- as.numeric(as.character(data$num_ill))
@@ -25,8 +31,8 @@ plot.overall.ribbon <- function(data.in, vars.to.plot, CI.lvl, y.lab.in, y.lim.i
     stat_summary(geom="ribbon", fun.data=mean_cl_normal, fun.args=list(conf.int=CI.lvl), colour=NA ,alpha=0.25)+  
     stat_summary(geom="line", fun=mean, linetype="dashed") + 
     stat_summary(geom="point", fun=mean, colour="slategrey") +
-    theme_bw() + theme(legend.title = element_blank()) +
-    xlab("Number Ill") + ylab(TeX(y.lab.in)) +
+    theme_bw() + my_theme +
+    xlab("Illness cases (c)") + ylab(TeX(y.lab.in)) +
     coord_cartesian(ylim = y.lim.in)
   #stat_summary(geom="point", fun=mean, color="red")
   
@@ -46,7 +52,31 @@ plot.overall.ribbon <- function(data.in, vars.to.plot, CI.lvl, y.lab.in, y.lim.i
 # plot.mean = 1
 # plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
 
-plot.together.ribbon <- function(data.in, vars.to.plot, CI.lvl, y.lab.in, y.lim.in, plot.mean){
+plot.together.ribbon <- function(data.in, vars.to.plot, CI.lvl, x.lab.in, y.lab.in, y.lim.in, plot.mean, include.legend=TRUE, include.title=FALSE){
+  
+  my_theme=theme(legend.title = element_blank() , 
+        legend.text = element_text(size = 14),
+        axis.title.x = element_text(size = 16), 
+        axis.text.x = element_text(size = 14), 
+        axis.title.y = element_text(size = 16),
+        axis.text.y = element_text(size = 14))
+  if (include.legend==FALSE){
+    my_theme= theme(legend.position = "none", 
+          legend.text = element_text(size = 14),
+          axis.title.x = element_text(size = 16), 
+          axis.text.x = element_text(size = 14), 
+          axis.title.y = element_text(size = 16),
+          axis.text.y = element_text(size = 14))
+  }
+  if (include.title!=FALSE){
+    my_theme= theme(legend.title = element_blank() ,
+                    legend.text = element_text(size = 14),
+                    axis.title.x = element_text(size = 16), 
+                    axis.text.x = element_text(size = 14), 
+                    axis.title.y = element_text(size = 16),
+                    axis.text.y = element_text(size = 14),
+                    plot.title = element_text(size = 16, hjust = 0.5))
+  }
   
   ## Select vars.to.plot
   data <- data.in %>% filter (foodnet %in% vars.to.plot)
@@ -70,34 +100,40 @@ plot.together.ribbon <- function(data.in, vars.to.plot, CI.lvl, y.lab.in, y.lim.
   
   ## Plot
   if (plot.mean==0){
-    ggplot(data, aes(x=(num_ill), y=value, color=foodnet, fill=foodnet))+ 
+    p <- ggplot(data, aes(x=(num_ill), y=value, color=foodnet, fill=foodnet))+ 
       stat_summary(geom="ribbon", fun.data=mean_cl_normal,
                    fun.args=list(conf.int=CI.lvl), alpha=0.5, colour="slategrey", size=.25)+
       #stat_summary(geom="ribbon", fun.data=mean_cl_normal, colour=NA ,alpha=0.1)+  
       stat_summary(geom="line", fun=mean, linetype="dashed", colour="slategrey")+
       #stat_summary(geom="point", fun=mean, colour="slategrey") +
-      theme_bw() + theme(legend.title = element_blank()) + 
+      theme_bw() + my_theme + 
       #scale_y_continuous(limits = c(0, 1))+ #, breaks = seq(from = y.min.in, to = y.max.in, by = (y.max.in-y.min.in)/5))+
       scale_color_brewer(palette="Set1",labels=longnames) + scale_fill_brewer(palette="Set1",labels=longnames) +
-      xlab("Number Ill") + ylab(TeX(y.lab.in)) +
+      xlab((x.lab.in)) + ylab(TeX(y.lab.in)) +
       coord_cartesian(ylim = y.lim.in)
+    if (include.title!=FALSE){
+      p <- p + ggtitle(include.title)
+    }
   }
   
   else if (plot.mean==1){
-    ggplot(data, aes(x=(num_ill), y=value))+ 
+    p <- ggplot(data, aes(x=(num_ill), y=value))+ 
       stat_summary(geom="ribbon", fun.data=mean_cl_normal, fun.args=list(conf.int=CI.lvl), colour="black", size=0.25, alpha=0.25)+  
       stat_summary(geom="line", fun=mean, linetype="dotted", size=0.5) + 
       
       stat_summary(aes(x=(num_ill), y=value, color=foodnet, fill=foodnet), geom="ribbon", fun.data=mean_cl_normal,
                    fun.args=list(conf.int=CI.lvl), alpha=0.5, colour="slategrey", size=.25)+
       stat_summary(aes(x=(num_ill), y=value, color=foodnet, fill=foodnet), geom="line", fun=mean, linetype="dashed", colour="slategrey") +
-      theme_bw() + theme(legend.title = element_blank()) +
+      theme_bw() + my_theme +
       scale_color_brewer(palette="Set1",labels=longnames) + scale_fill_brewer(palette="Set1",labels=longnames) +
-      xlab("Number Ill") + ylab(TeX(y.lab.in)) +
+      xlab((x.lab.in)) + ylab(TeX(y.lab.in)) +
       coord_cartesian(ylim = y.lim.in)
+    if (include.title!=FALSE){
+      p <- p + ggtitle(include.title)
+    }
   }
   #scale_fill_manual(values = c(cols.list),labels = longnames) + scale_color_manual(values = c(cols.list), labels = longnames)
-  
+  return(p)
 }
 
 

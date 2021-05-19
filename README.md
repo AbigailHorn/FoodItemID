@@ -10,7 +10,7 @@
 
 # Network-based signal resonance for food-source identification in foodborne disease outbreaks
 
-Abigail L. Horn^1^, Marcel Fuhrmann^2^, Tim Schlaich^3^, Andreas Balster^3^, Elena Polozova^4^, Annemarie Kaesboehrer^2^, Matthias Filter^2^, Hanno Friedrich^3^
+Abigail L. Horn^1^, Marcel Fuhrmann^2^, Tim Schlaich^3^, Andreas Balster^3^, Elena Polozova^4^, Armin Weiser^2^, Annemarie Kaesboehrer^2^, Matthias Filter^2^, Hanno Friedrich^3^
 
 ^1^ Division of Biostatistics, Department of Preventive Medicine, University of Southern California, Los Angeles, CA, USA
 

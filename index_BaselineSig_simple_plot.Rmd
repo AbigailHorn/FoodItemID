@@ -1,7 +1,7 @@
 ---
 title: "Baseline characteristic signal resonance"
 author: "Abigail Horn"
-date: "3/18/2021"
+date: "5/18/2021"
 output: 
     html_document:
         toc: TRUE
@@ -82,7 +82,7 @@ code.dir=here("code/")
 Germany.dir=here("data/ACC_tests/Germany/")
 RLG.dir=here("data/ACC_tests/RLG/")
 fig.dir = here("figs/")
-output.dir = here("output/")
+output.dir = here("output/figure_update")
 data.dir=here("data/")
 
 ```
@@ -134,22 +134,13 @@ CI.lvl <- 0.95
 plot.mean <- 1
 
 data.in <- sig_sim.traj  # %>% filter(num_ill != "1")   %>% filter(iter < 101) 
-y.lab.in <- "$B^{sim}_{N_i}$"
+x.lab.in <- expression(paste("Number illness cases ",italic("c")))  #"Number illness cases $c$"
+y.lab.in <- "baseline simulated signal $\\mathit{B^{sim}_{N_i}}$"
 y.lim.in <- c(.1156,.11585)
 plot.mean=0
-p_singleOB <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                        y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
-#p_singleOB
-
-```
-
-<!--- Print this single outbreak --->
-
-```{r}
-
-#pdf(file = path(output.dir, "baseline2/BaselineSigSIM.pdf"), width=10, height =10)
-p_singleOB
-#dev.off()
+baseline_sim <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                       x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+#baseline_sim
 
 ```
 
@@ -164,28 +155,44 @@ CI.lvl <- 0.95
 plot.mean <- 1
 
 data.in <- sig_rand.traj  # %>% filter(num_ill != "1")   %>% filter(iter < 101) 
-y.lab.in <- "$B^{rand}_{N_i}$"
-#y.lim.in <- c(.1156,.11585)
+y.lab.in <- "simulated random signal $\\mathit{B^{rand}_{N_i}}$"
+y.lim.in <- c(.1156,.11585)
+#y.lim.in <- c(.115595,.11563)
+plot.mean=0
+baseline_rand <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                        x.lab.in=x.lab.in,y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+#baseline_rand
+
+data.in <- sig_rand.traj  # %>% filter(num_ill != "1")   %>% filter(iter < 101) 
+y.lab.in <- "simulated random signal $\\mathit{B^{rand}_{N_i}}$"
 y.lim.in <- c(.115595,.11563)
 plot.mean=0
-p_singleOB <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                        y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
-#p_singleOB
+baseline_rand_zoomin <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                             x.lab.in=x.lab.in,y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean,
+                                             include.legend=FALSE) 
 
 ```
 
-<!--- Print this single outbreak --->
+## Baseline signals
 
 ```{r}
 
-#pdf(file = path(output.dir, "baseline2/BaselineSigRAND_zoomIN.pdf"), width=10, height =10)
-p_singleOB
+#pdf(file = path(output.dir, "BaselineSig.pdf"), width=12, height =5)
+baseline_sim + baseline_rand + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'a') & 
+  theme(plot.tag = element_text(size = 20))
 #dev.off()
 
 ```
 
+## Zoom-in of baseline random signal 
 
+```{r}
 
+#pdf(file = path(output.dir, "BaselineSig_randZoom.pdf"), width=4, height =4)
+baseline_rand_zoomin
+#dev.off()
+
+```
 
 
 

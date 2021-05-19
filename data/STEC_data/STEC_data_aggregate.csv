@@ -1,0 +1,299 @@
+week,19,20,21,22,23,24,25,26,27,28,29
+NA,0,0,1,5,0,3,0,1,1,0,0
+LK Ahrweiler,0,0,0,0,1,0,0,0,0,0,0
+LK Alb-Donau-Kreis,0,1,1,0,0,0,1,0,0,0,0
+LK Altenkirchen,0,0,0,1,0,0,0,0,0,0,0
+LK Altmarkkreis Salzwedel,0,0,2,1,1,0,0,0,0,0,0
+LK Alzey-Worms,0,0,0,1,0,0,0,0,0,0,0
+LK Ammerland,0,0,1,0,0,1,0,0,0,0,0
+LK Anhalt-Bitterfeld,0,0,0,2,1,1,0,0,0,0,0
+LK Ansbach,0,0,0,0,1,2,1,2,1,0,0
+LK Aschaffenburg,0,1,0,0,0,0,0,0,0,0,0
+LK Aurich,0,0,1,3,2,1,1,1,1,0,0
+LK Bad Doberan,0,0,4,10,0,0,2,0,0,0,0
+LK Bad Kissingen,0,0,0,1,0,0,0,0,0,0,0
+LK Bad Kreuznach,0,0,0,2,0,0,0,0,0,0,0
+LK Bad Tölz-Wolfratshausen,0,0,0,1,0,0,1,0,2,1,0
+LK Barnim,0,0,0,0,1,1,0,1,0,0,0
+LK Bautzen,1,0,1,2,1,0,0,0,0,0,0
+LK Bayreuth,0,0,0,0,0,0,0,0,1,0,0
+LK Bergstraße,0,0,1,0,2,0,0,0,0,0,0
+LK Bernkastel-Wittlich,0,0,0,0,1,1,0,0,0,0,0
+LK Biberach,0,0,1,2,2,0,1,0,0,0,0
+LK Birkenfeld,0,1,0,0,0,0,0,1,0,0,0
+LK Bitburg-Prüm,0,0,1,0,0,0,0,0,0,0,1
+LK Böblingen,0,0,2,1,1,0,0,0,0,1,0
+LK Bodenseekreis,0,0,1,0,1,1,1,1,1,1,0
+LK Börde,0,0,0,1,0,0,0,0,1,0,0
+LK Borken,0,0,0,0,2,0,1,1,2,0,1
+LK Breisgau-Hochschwarzwald,0,0,0,0,0,1,0,0,0,0,0
+LK Burgenlandkreis,0,0,1,0,0,0,0,0,0,0,0
+LK Calw,0,0,0,0,0,1,0,1,1,0,0
+LK Celle,0,0,3,3,3,2,1,0,0,0,0
+LK Cham,0,1,0,0,0,0,0,1,0,0,0
+LK Cloppenburg,0,0,2,0,1,0,1,0,0,0,0
+LK Coburg,0,0,0,0,0,0,0,1,0,0,0
+LK Coesfeld,0,1,1,0,2,1,0,0,0,0,0
+LK Cuxhaven,1,4,57,33,13,3,1,2,2,0,0
+LK Dachau,0,0,0,0,0,0,0,1,0,0,0
+LK Deggendorf,0,0,0,0,1,1,0,0,0,0,0
+LK Demmin,0,0,0,2,0,0,0,0,0,0,0
+LK Diepholz,0,0,4,7,2,0,0,1,0,0,0
+LK Dillingen a.d.Donau,0,0,0,1,0,1,0,0,0,0,0
+LK Dingolfing-Landau,0,0,0,0,1,0,1,1,0,0,0
+LK Dithmarschen,0,0,1,5,2,0,0,1,0,0,0
+LK Donau-Ries,0,0,0,0,2,2,1,0,0,0,0
+LK Eichsfeld,0,0,1,0,1,1,0,1,0,0,0
+LK Eichstätt,0,0,0,1,1,0,1,0,1,0,0
+LK Emmendingen,0,0,0,0,0,1,0,0,1,0,0
+LK Emsland,0,0,3,1,1,1,0,0,1,0,0
+LK Ennepe-Ruhr-Kreis,1,0,0,0,2,3,1,0,0,1,0
+LK Enzkreis,0,0,0,1,0,0,0,0,0,0,0
+LK Erding,0,0,0,0,1,1,0,0,1,0,0
+LK Erzgebirgskreis,0,0,1,0,0,0,0,0,0,0,0
+LK Esslingen,0,0,0,1,1,1,0,1,0,0,0
+LK Euskirchen,0,1,0,0,0,0,0,1,1,1,0
+LK Forchheim,0,0,0,0,0,0,0,1,3,0,0
+LK Freising,0,0,0,2,0,0,1,0,1,0,0
+LK Friesland,0,1,10,7,2,2,1,0,2,1,0
+LK Fulda,0,0,1,0,0,1,1,0,1,0,0
+LK Germersheim,0,0,0,0,1,1,0,0,0,1,0
+LK Gießen,0,0,0,1,2,0,0,2,2,0,0
+LK Gifhorn,0,0,0,1,4,0,0,0,0,0,0
+LK Görlitz,1,0,0,0,0,1,0,0,0,0,0
+LK Goslar,0,0,2,4,4,4,1,0,0,0,0
+LK Gotha,0,0,0,2,0,0,0,1,0,0,0
+LK Göttingen,0,0,2,2,11,15,6,6,1,1,0
+LK Greiz,0,0,0,1,0,0,0,0,0,0,0
+LK Güstrow,0,0,2,2,4,0,0,1,0,0,0
+LK Gütersloh,0,0,8,5,2,1,1,0,1,0,0
+LK Hameln-Pyrmont,0,0,1,2,0,0,1,1,1,1,1
+LK Harburg,0,1,9,10,6,2,2,1,0,1,0
+LK Harz,0,0,0,2,0,0,0,0,0,0,0
+LK Haßberge,0,0,0,0,0,1,0,0,0,0,0
+LK Heidenheim,0,0,0,1,1,0,0,1,0,0,0
+LK Heilbronn,0,0,0,1,1,0,0,0,0,0,0
+LK Heinsberg,0,0,0,0,0,0,0,0,1,0,0
+LK Helmstedt,0,0,0,0,0,0,0,0,1,0,0
+LK Herford,0,0,5,2,0,0,0,0,0,0,0
+LK Hersfeld-Rotenburg,0,0,0,1,0,3,0,0,0,0,0
+LK Herzogtum Lauenburg,0,1,54,42,4,3,3,1,1,0,0
+LK Hildburghausen,0,0,1,0,0,0,1,0,0,0,0
+LK Hildesheim,1,0,1,4,0,3,0,1,1,2,1
+LK Hochsauerlandkreis,0,0,2,1,0,0,0,0,1,0,0
+LK Hof,0,0,0,0,0,1,0,0,0,0,0
+LK Holzminden,0,0,0,2,2,0,0,0,0,1,0
+LK Höxter,0,0,3,2,0,0,1,0,0,0,0
+LK Ilm-Kreis,0,0,0,0,1,1,0,0,0,0,0
+LK Kaiserslautern,1,0,0,0,0,0,0,0,0,0,0
+LK Karlsruhe,0,0,0,0,1,1,1,0,0,0,0
+LK Kassel,0,0,0,0,1,0,1,1,1,0,0
+LK Kelheim,0,0,0,1,0,0,0,1,0,0,0
+LK Kleve,0,0,0,0,0,0,0,0,1,0,1
+LK Konstanz,0,0,0,2,2,0,1,0,0,0,0
+LK Kronach,0,0,0,0,0,0,1,0,0,0,0
+LK Kyffhäuserkreis,0,0,0,0,0,0,1,0,0,0,0
+LK Lahn-Dill-Kreis,0,0,0,0,0,2,1,0,0,0,0
+LK Landshut,0,0,0,1,0,0,0,0,0,0,0
+LK Leer,0,0,1,4,2,0,1,2,0,0,1
+LK Limburg-Weilburg,0,1,0,0,0,0,0,1,0,0,0
+LK Lindau,0,0,1,1,0,0,0,0,0,0,0
+LK Lippe,0,0,1,0,1,2,1,0,3,0,0
+LK Lörrach,0,0,0,0,1,0,0,0,0,0,0
+LK Lüchow-Dannenberg,0,0,0,1,0,1,0,0,0,0,0
+LK Ludwigsburg,0,0,0,1,0,1,0,1,0,0,0
+LK Ludwigslust,0,2,11,16,2,2,1,0,1,0,0
+LK Lüneburg,0,0,44,19,0,2,3,2,0,0,0
+LK Main-Kinzig-Kreis,0,0,0,0,0,1,1,0,0,0,0
+LK Main-Taunus-Kreis,0,0,2,0,0,0,0,2,1,0,0
+LK Mainz-Bingen,0,0,0,0,0,0,0,0,0,1,0
+LK Marburg-Biedenkopf,0,0,1,1,1,1,0,0,1,0,0
+LK Märkischer Kreis,0,0,0,0,4,1,0,0,0,0,0
+LK Mayen-Koblenz,1,0,0,0,0,1,0,0,0,0,0
+LK Mecklenburg-Strelitz,0,0,2,1,0,0,0,1,0,0,0
+LK Meißen,0,1,0,0,1,0,0,0,0,0,0
+LK Mettmann,0,0,0,0,0,0,0,0,1,0,0
+LK Miesbach,0,0,0,0,0,1,0,0,1,0,0
+LK Minden-Lübbecke,0,0,0,0,0,1,0,0,0,0,0
+LK Mittelsachsen,0,0,0,0,0,0,0,0,1,0,0
+LK München,0,1,0,2,0,0,1,0,2,0,0
+LK Müritz,0,0,7,2,0,0,0,0,0,0,0
+LK Neu-Ulm,0,0,0,1,0,0,0,0,0,0,0
+LK Neunkirchen,0,0,1,0,0,0,0,0,0,0,0
+LK Neustadt/Aisch-Bad Windsheim,0,0,0,0,0,1,2,0,0,0,0
+LK Nienburg (Weser),0,0,1,2,0,1,0,1,0,0,0
+LK Nordfriesland,0,1,49,45,17,6,1,2,0,0,0
+LK Nordsachsen,0,1,0,0,0,0,0,0,0,0,0
+LK Nordvorpommern,0,1,9,10,6,1,0,0,1,0,0
+LK Nordwestmecklenburg,0,0,1,5,5,0,2,2,1,1,0
+LK Northeim,0,0,0,1,1,4,1,1,1,0,0
+LK Nürnberger Land,0,0,0,0,1,0,1,1,2,0,0
+LK Oberallgäu,1,0,0,3,1,3,1,0,0,0,0
+LK Oberbergischer Kreis,0,0,0,0,0,0,0,1,1,0,0
+LK Oberspreewald-Lausitz,0,0,1,0,0,0,0,0,0,0,0
+LK Oder-Spree,0,0,0,1,0,0,0,0,0,0,0
+LK Offenbach,0,0,1,1,1,0,0,0,1,0,0
+LK Oldenburg,0,0,0,2,0,0,0,0,0,0,0
+LK Olpe,0,0,1,0,0,0,0,0,0,0,0
+LK Ortenaukreis,0,0,0,1,1,0,1,0,0,0,0
+LK Osnabrück,0,0,2,2,2,1,0,1,0,2,0
+LK Ostalbkreis,0,0,0,0,1,0,1,1,0,1,0
+LK Ostallgäu,0,0,0,0,0,0,1,1,2,0,0
+LK Osterholz,0,0,0,0,1,0,0,0,0,0,0
+LK Osterode am Harz,0,0,1,0,1,0,0,0,0,0,0
+LK Ostholstein,1,0,26,19,16,2,1,1,2,1,1
+LK Ostprignitz-Ruppin,0,0,0,0,0,0,0,0,1,0,0
+LK Ostvorpommern,0,0,8,9,2,0,1,0,0,0,0
+LK Paderborn,0,0,31,15,7,1,3,7,2,2,0
+LK Parchim,0,0,9,19,3,1,2,2,1,0,0
+LK Passau,0,0,0,0,0,1,1,2,0,0,0
+LK Peine,0,0,2,2,1,3,0,0,0,0,0
+LK Pinneberg,0,2,55,62,28,3,2,2,2,1,0
+LK Plön,0,0,19,8,8,2,2,0,0,2,1
+LK Potsdam-Mittelmark,0,0,0,1,0,0,0,0,0,0,0
+LK Prignitz,0,0,0,1,7,1,1,3,0,0,0
+LK Rastatt,0,1,0,1,0,0,1,0,1,0,0
+LK Ravensburg,0,0,6,3,1,0,0,1,0,1,0
+LK Recklinghausen,0,0,0,2,1,0,0,0,0,0,0
+LK Rendsburg-Eckernförde,0,1,32,16,11,1,0,0,0,0,0
+LK Reutlingen,0,0,0,1,0,0,0,0,0,0,0
+LK Rhein-Erft-Kreis,0,0,3,1,4,1,0,0,1,0,0
+LK Rhein-Kreis Neuss,0,0,2,2,0,0,0,0,0,0,0
+LK Rhein-Lahn-Kreis,0,0,1,0,0,0,0,1,0,0,0
+LK Rhein-Neckar-Kreis,0,0,0,1,0,0,0,0,0,0,0
+LK Rhein-Sieg-Kreis,0,2,1,2,2,1,0,1,2,1,0
+LK Rheingau-Taunus-Kreis,0,0,0,1,1,0,0,0,0,0,0
+LK Rheinisch-Bergischer Kreis,0,0,0,0,1,0,0,1,0,0,0
+LK Rosenheim,0,0,1,0,1,1,0,0,0,0,0
+LK Rotenburg (Wümme),0,0,8,27,6,1,1,0,1,0,0
+LK Rottweil,0,0,0,1,0,0,0,0,0,0,0
+LK Rügen,0,0,15,7,1,0,0,0,1,0,0
+LK Saale-Orla-Kreis,0,0,0,0,0,0,0,1,0,0,0
+LK Saalekreis,0,0,1,0,0,0,0,1,0,1,0
+LK Saalfeld-Rudolstadt,0,0,0,1,0,0,0,1,1,0,0
+LK Saar-Pfalz-Kreis,0,0,0,1,0,0,0,0,0,0,0
+LK Sächsische Schweiz-Osterzgebirge,0,0,0,0,1,1,0,0,0,0,0
+LK Sankt Wendel,0,0,0,0,0,1,0,0,0,0,0
+LK Schaumburg,0,0,0,0,2,1,0,0,0,0,0
+LK Schleswig-Flensburg,0,2,56,37,15,6,1,0,0,0,0
+LK Schmalkalden-Meiningen,0,0,1,0,0,0,3,0,0,0,1
+LK Schwäbisch Hall,0,0,1,0,0,1,0,0,2,0,0
+LK Schwalm-Eder-Kreis,0,0,0,0,0,0,0,0,1,0,0
+LK Schwarzwald-Baar-Kreis,0,0,2,1,1,0,0,0,2,0,0
+LK Segeberg,0,4,29,29,8,2,4,3,1,0,0
+LK Siegen-Wittgenstein,0,0,0,1,0,2,0,0,0,0,1
+LK Sigmaringen,0,0,3,1,0,0,0,0,0,0,0
+LK Soest,0,0,4,1,1,2,1,0,0,1,0
+LK Soltau-Fallingbostel,0,1,0,5,1,0,0,0,0,0,0
+LK Sömmerda,0,0,0,1,1,0,0,0,0,0,0
+LK Stade,0,1,29,22,10,2,1,1,0,2,0
+LK Starnberg,0,0,0,0,0,1,0,0,0,0,0
+LK Steinburg,0,0,2,8,8,1,2,1,0,1,0
+LK Steinfurt,0,0,2,1,1,0,0,1,3,1,1
+LK Stendal,0,0,0,6,0,0,0,0,0,0,0
+LK Stormarn,0,5,38,43,15,11,3,2,0,0,0
+LK Straubing-Bogen,1,0,0,0,0,0,0,0,0,0,0
+LK Südliche Weinstraße,0,0,1,0,0,1,0,0,0,0,0
+LK Traunstein,0,0,0,0,1,0,2,0,2,0,0
+LK Trier-Saarburg,0,0,0,0,0,0,0,1,1,0,1
+LK Tübingen,0,0,0,0,0,1,0,0,2,0,0
+LK Tuttlingen,0,0,1,1,0,0,0,0,0,0,0
+LK Uecker-Randow,0,0,0,0,1,1,0,0,0,0,0
+LK Uelzen,0,0,5,1,3,0,0,0,0,0,0
+LK Unna,2,1,1,2,0,2,2,1,0,0,0
+LK Unterallgäu,0,0,0,0,1,0,0,0,0,0,0
+LK Vechta,0,0,0,0,0,0,2,0,0,0,0
+LK Verden,0,0,10,13,1,0,1,0,0,0,0
+LK Viersen,0,0,1,0,0,0,0,0,1,0,0
+LK Vogtlandkreis,0,0,0,0,2,0,0,0,0,0,0
+LK Warendorf,0,1,0,1,1,7,0,0,0,0,0
+LK Weilheim-Schongau,0,0,0,1,1,2,0,0,0,0,0
+LK Weimarer Land,0,0,0,0,0,1,0,0,0,0,0
+LK Weißenburg-Gunzenhausen,0,0,0,0,3,3,0,0,0,0,0
+LK Werra-Meißner-Kreis,0,0,0,0,2,0,1,0,0,0,0
+LK Wesel,0,0,0,0,0,0,2,3,0,0,1
+LK Wesermarsch,0,0,6,2,9,2,0,2,1,0,0
+LK Westerwaldkreis,0,0,1,0,0,1,1,0,0,0,0
+LK Wetteraukreis,0,0,1,0,0,0,1,2,0,0,0
+LK Wittenberg,0,0,0,1,0,0,0,0,0,0,0
+LK Wittmund,0,0,1,0,0,0,1,0,0,0,0
+LK Wolfenbüttel,0,0,0,0,1,1,1,1,0,0,0
+LK Zollernalbkreis,0,0,0,0,1,0,0,0,0,0,0
+LK Zwickau,0,0,0,1,1,0,1,0,0,1,0
+Region Hannover,0,0,8,17,8,6,5,1,2,0,0
+SK Augsburg,0,0,0,0,0,1,0,1,0,0,0
+SK Bamberg,0,0,0,1,0,0,0,0,0,0,0
+SK Berlin Charlottenburg-Wilmersdorf,0,0,2,1,0,2,1,1,0,0,0
+SK Berlin Friedrichshain-Kreuzberg,0,1,4,0,1,0,0,0,0,0,0
+SK Berlin Lichtenberg,0,0,0,0,1,0,1,0,1,0,0
+SK Berlin Mitte,0,0,0,2,1,1,1,0,0,0,0
+SK Berlin Pankow,0,0,0,1,0,0,0,0,0,0,0
+SK Berlin Reinickendorf,0,0,0,0,0,0,0,0,3,0,0
+SK Berlin Steglitz-Zehlendorf,0,0,0,0,0,1,0,0,0,0,0
+SK Berlin Tempelhof-Schöneberg,0,0,1,1,1,0,0,0,0,0,0
+SK Berlin Treptow-Köpenick,0,0,0,0,1,1,0,0,0,0,0
+SK Bielefeld,0,0,4,3,1,0,0,2,0,0,0
+SK Bochum,0,0,1,1,0,2,0,0,0,3,0
+SK Bonn,0,0,0,1,0,0,3,0,0,0,0
+SK Brandenburg a.d.Havel,0,0,2,1,0,0,0,0,0,0,0
+SK Braunschweig,0,0,1,4,2,0,0,0,1,0,0
+SK Bremen,0,0,8,5,12,0,1,3,0,0,0
+SK Bremerhaven,0,0,12,10,7,1,1,0,0,0,0
+SK Chemnitz,0,0,0,0,1,0,1,1,0,0,0
+SK Coburg,0,0,0,0,0,0,0,0,0,1,0
+SK Darmstadt,0,1,4,0,0,0,0,0,0,0,0
+SK Delmenhorst,0,0,1,0,0,0,0,1,0,0,1
+SK Dortmund,0,0,1,1,4,2,0,0,0,0,0
+SK Duisburg,0,0,0,0,0,0,2,1,1,0,0
+SK Düsseldorf,0,0,0,1,2,0,0,2,0,0,0
+SK Eisenach,0,0,0,2,0,0,0,0,0,0,0
+SK Emden,0,0,1,0,0,1,1,0,0,0,0
+SK Erfurt,0,0,1,1,3,1,1,1,0,1,1
+SK Essen,0,0,2,0,5,0,0,0,0,0,0
+SK Flensburg,0,0,1,1,3,0,1,1,0,0,0
+SK Frankfurt am Main,0,7,27,9,5,2,1,3,0,1,0
+SK Freiburg i.Breisgau,0,0,2,0,0,0,0,0,0,0,0
+SK Gelsenkirchen,0,0,1,0,0,0,0,2,0,0,0
+SK Greifswald,0,0,2,6,0,2,0,0,0,0,0
+SK Hagen,0,0,2,2,2,0,0,2,0,0,0
+SK Halle,0,0,0,1,1,1,0,0,1,1,0
+SK Hamburg,0,34,330,185,84,39,30,25,11,2,2
+SK Hamm,0,0,1,0,1,0,1,0,0,0,0
+SK Heidelberg,0,0,0,0,0,1,1,0,0,0,0
+SK Heilbronn,0,0,0,0,0,0,1,0,0,1,0
+SK Herne,0,0,0,1,0,1,0,0,0,0,0
+SK Karlsruhe,0,0,0,1,0,0,0,0,0,0,0
+SK Kassel,0,0,1,1,2,0,2,0,0,0,0
+SK Kiel,0,0,15,15,6,4,2,1,0,0,0
+SK Koblenz,0,0,0,1,1,0,0,0,0,0,0
+SK Köln,0,0,3,7,8,1,0,3,4,0,1
+SK Krefeld,0,0,1,2,0,2,0,1,0,0,0
+SK Landau i.d.Pfalz,0,0,0,0,0,0,1,0,0,0,0
+SK Leipzig,0,0,0,1,0,0,1,0,0,0,0
+SK Lübeck,0,0,65,50,24,14,7,3,2,1,0
+SK Ludwigshafen,0,0,0,0,0,1,1,0,0,0,0
+SK Magdeburg,0,0,2,0,0,0,0,0,0,0,0
+SK Mainz,0,0,0,0,0,0,0,0,0,0,1
+SK Memmingen,0,0,0,0,0,0,0,0,2,0,0
+SK Mönchengladbach,0,0,0,0,0,0,0,1,0,0,0
+SK München,0,0,1,3,4,1,2,1,2,1,0
+SK Münster,0,1,5,3,3,2,0,0,0,0,2
+SK Neumünster,0,0,5,2,0,0,0,0,0,0,0
+SK Nürnberg,0,1,3,1,0,0,0,0,1,0,0
+SK Oberhausen,0,0,1,0,0,1,0,0,0,0,0
+SK Oldenburg,0,0,2,4,0,0,0,0,0,0,0
+SK Potsdam,0,0,1,0,2,1,1,0,0,0,0
+SK Regensburg,0,0,0,1,0,0,0,1,0,0,0
+SK Rostock,0,1,6,3,2,0,0,0,1,0,0
+SK Salzgitter,0,0,0,0,1,1,0,0,0,0,0
+SK Schwerin,0,0,5,3,1,1,0,0,0,0,0
+SK Solingen,0,0,0,0,0,0,1,0,0,0,0
+SK Stralsund,0,0,1,0,0,0,0,1,0,0,0
+SK Stuttgart,0,0,0,1,0,0,1,0,0,0,0
+SK Ulm,0,0,0,0,2,0,0,0,1,1,0
+SK Wiesbaden,0,0,0,0,2,0,1,0,0,0,0
+SK Wilhelmshaven,0,0,1,1,1,2,0,0,0,0,0
+SK Wismar,0,0,0,0,1,0,0,0,0,0,1
+SK Wuppertal,0,0,0,0,1,0,1,0,0,0,0
+SK Würzburg,0,0,0,0,1,0,0,0,0,0,0
+StadtRegion Aachen,0,0,0,1,2,0,0,0,0,0,0

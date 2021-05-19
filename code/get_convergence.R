@@ -23,7 +23,7 @@ get.conv <- function(test.iter.idx, num.ill.idx, ACC.data.in){
     
     y.lim.in <- c(0, 1)
     p_ACC_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
-                                           y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+                                           x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
     
     CI1 <- ggplot_build(p_ACC_together)$data[[3]]
     CI2 <- CI1 %>% filter(x==num.ill.idx) %>% select(c(group,y,ymin,ymax))
@@ -76,7 +76,27 @@ get.conv <- function(test.iter.idx, num.ill.idx, ACC.data.in){
 # plot.sig <- plot.together.ribbon.conv(traj.CI=traj.CI, y.lab.in="Accuracy", y.max.in=NULL, chart.title=chart.title)
 # plot.sig
 
-plot.together.ribbon.conv <- function(traj.CI, y.lab.in, y.max.in, chart.title) {
+plot.together.ribbon.conv <- function(traj.CI, x.lab.in, y.lab.in, y.max.in, y.lim.in=c(0,1.55), include.title=FALSE){ #, chart.title) {
+  
+  my_theme=theme(
+    legend.position = "none",
+    # legend.title = element_blank() , 
+    # legend.text = element_text(size = 14),
+    axis.title.x = element_text(size = 16), 
+    axis.text.x = element_text(size = 14), 
+    axis.title.y = element_text(size = 16),
+    axis.text.y = element_text(size = 14))
+  
+  if (include.title!=FALSE){
+    my_theme= theme(legend.position = "none",
+                    # legend.title = element_blank() ,
+                    # legend.text = element_text(size = 14),
+                    axis.title.x = element_text(size = 16), 
+                    axis.text.x = element_text(size = 14), 
+                    axis.title.y = element_text(size = 16),
+                    axis.text.y = element_text(size = 14),
+                    plot.title = element_text(size = 16, hjust = 0.5))
+  }
   
   ###########
   ### traj.CI
@@ -88,7 +108,7 @@ plot.together.ribbon.conv <- function(traj.CI, y.lab.in, y.max.in, chart.title) 
   #y.max.in <- round(max(traj.CI$ymax))
   
   ## Add title
-  traj.CI$title <- chart.title
+  #traj.CI$title <- chart.title
   
   #####################
   ### colors and names
@@ -102,18 +122,18 @@ plot.together.ribbon.conv <- function(traj.CI, y.lab.in, y.max.in, chart.title) 
   
   ## Colors
   
-  cols.list <- c(
-    "salmon",
-    "navajowhite3",
-    "olivedrab4",
-    "mediumseagreen",
-    "mediumturquoise",
-    "cyan2",
-    "lightskyblue"
-  )
+  # cols.list <- c(
+  #   "salmon",
+  #   "navajowhite3",
+  #   "olivedrab4",
+  #   "mediumseagreen",
+  #   "mediumturquoise",
+  #   "cyan2",
+  #   "lightskyblue"
+  # )
   
-  names(cols.list) <- names(longnames)
-  color.this.var <- as.character(cols.list[c(1:6)])
+  # names(cols.list) <- names(longnames)
+  # color.this.var <- as.character(cols.list[c(1:6)])
   
   ##################
   ### CREATE PLOT
@@ -142,16 +162,22 @@ plot.together.ribbon.conv <- function(traj.CI, y.lab.in, y.max.in, chart.title) 
   ## FINISH PLOT
   p <- p + theme_bw() + theme(legend.title = element_blank())
   #p <- p + scale_x_date(limits = as.Date(c(startDatePlot,endDatePlot)), date_breaks = "1 month" , date_labels = "%d-%b-%y")
-  p <- p + scale_y_continuous(limits = c(0,y.max.in), breaks = seq(from = 0, to = y.max.in, by = y.max.in/4))
+  #p <- p + scale_y_continuous(limits = c(0,y.max.in), breaks = seq(from = 0, to = y.max.in, by = y.max.in/4))
+  p <- p + coord_cartesian(ylim = y.lim.in)
   # p <- p + theme(axis.text.x = element_text(angle = 90),
   #                strip.text.x = element_text(size = 12, face = "bold"))
-  p <- p + theme(strip.text.x = element_text(size=12,face="bold"))
+  #p <- p + theme(strip.text.x = element_text(size=12,face="bold"))
+  p <- p + my_theme
   #  p <- p + ylab(paste0("Number  ", as.character(longnames[var.to.plot]))) + xlab(NULL)
   #p <- p + ylab("Probability") + xlab(NULL)
-  p <- p + ylab(TeX(y.lab.in)) + xlab("Number of outbreaks")
+  p <- p + xlab((x.lab.in)) + ylab(TeX(y.lab.in))
   #p <- p + labs(title = title.input)
   #p<-p+theme(plot.title = element_text(size = 12, hjust = 0.5, face="bold"))
-  p <- p + facet_grid(. ~ title)
+  #p <- p + facet_grid(. ~ title)
+  
+  if (include.title!=FALSE){
+    p <- p + ggtitle(include.title)
+  }
   
   p
   
