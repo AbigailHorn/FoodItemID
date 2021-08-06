@@ -12,7 +12,7 @@ navbar:
     - text: "Simulated Signal (Germany nets)"
       href: index_AccPlots_raw.html
     - text: "Normalized Signal Accuracy (Germany nets)"
-      href: index_SimSigR_convergence.html
+      href: index_SimSigR_convergence_RLG.html
   right:
     - icon: fa-github fa-lg
       href: https://github.com/AbigailHorn/FoodItemID
