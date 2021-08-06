@@ -24,10 +24,10 @@ Matlab_format <- function(data_in, num_iter, prev_max_iter, ill_interval){
 ## FUNCTION TO GET CI OVERALL AND BY EACH NET
 get.CI <- function(data_full, by_net){
   
-  data_full_filter <- data_full %>% filter(foodnet %in% c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  )
-  df.data_full <- as.data.table(data_full_filter)
+  #data_full_filter <- data_full %>% filter(foodnet %in% c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  )
+  #df.data_full <- as.data.table(data_full_filter)
   
-  #df.data_full <- as.data.table(data_full)
+  df.data_full <- as.data.table(data_full)
   
   if (by_net==0){
     traj.CI <- df.data_full[, list(

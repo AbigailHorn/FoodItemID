@@ -1,0 +1,362 @@
+---
+title: "Simulated Signal Relative to Random: Stylized Networks"
+author: "Abigail Horn"
+date: "8/5/2021"
+output: 
+    html_document:
+        toc: TRUE
+        toc_float: TRUE
+editor_options: 
+  chunk_output_type: console
+---
+
+Simulated Signal Relative to Random, $\overline{\psi^{sim}_{N_i}}(c)$
+
+<!--Initialize-->
+
+``` {r setup, include=FALSE}
+
+### Install necessary packages and get started
+
+library(reshape2)
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(ggrepel)
+library(bindata)
+library(odin)
+library(fitR)
+library(knitr)
+library(EasyABC)
+library(gridExtra)
+library(odin)
+library(lubridate)
+library(EasyABC)
+library(gridExtra)
+library(kableExtra)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(scales)
+library(EasyABC)
+library(patchwork)
+
+library(tidyr)
+library(readr)
+library(purrr)
+library(tibble)
+library(stringr)
+library(forcats)
+library(network)
+library(tidygraph)
+library(ggraph)
+library(visNetwork)
+library(networkD3)
+library(ggmosaic)
+library(formattable)
+library(DT)
+library(reshape)
+library(here)
+library(fs)
+library(latex2exp)
+
+
+library(MASS)
+library(plotly)
+
+lang_output <- function(x, lang) {
+  cat(c(sprintf("```%s", lang), x, "```"), sep = "\n")
+}
+r_output <- function(x) lang_output(x, "r")
+
+knitr::opts_chunk$set(
+  fig.width = 9.5,
+  fig.height = 8,
+  eval=TRUE,
+  echo=FALSE,
+  warning=FALSE,
+  cache=FALSE,
+  message=FALSE,
+  include=TRUE
+  )
+
+code.dir=here("code/")
+Germany.dir=here("data/ACC_tests/Germany/")
+RLG.dir=here("data/ACC_tests/RLG2021/")
+fig.dir = here("figs/")
+output.dir = here("output/")
+
+```
+
+
+<!---Read in and process accuracy results from Matlab--->
+
+
+```{r}
+
+## Source supporting functions
+Matlab_readin <- path(code.dir, "Matlab_readin.R")
+source(Matlab_readin)
+
+########################################################
+## LOOP TO COMBINE AND PROCESS ALL ACCURACY FILES
+
+## Inputs -- names and parameters of ACC files
+filenames <- c("ACC_raw_1_50", "ACC_raw_2_300", "ACC_raw_3_500","ACC_raw_4_300","ACC_raw_100samp_6_100") #c("ACC_SimSig_1_50", "ACC_SimSig_2_300", "ACC_SimSig_3_500")
+acc_inputs <- matrix(nrow=length(filenames), ncol=2)
+colnames(acc_inputs) <- c("filename","num_iter")
+acc_inputs[,"filename"] <- filenames
+# acc_inputs[,"filename"] <- c("ACC_raw_V10_30_Star_Acc2","ACC_raw_V7_30_Star_Acc2",
+#                             "ACC_raw_V8_30_Star_Acc2","ACC_raw_V9_50_Star_Acc2","ACC_raw_V11_30_Star_Acc2",
+#                             "ACC_raw_V12_50_Star_Acc2", "ACC_raw_V13_150_Star_Acc2",
+#                             "ACC_raw_V14_50_Star_Acc2","ACC_raw_V15_50_Star_Acc2",
+#                             "ACC_raw_V16_50_Star_Acc2","ACC_raw_V17_20_Star_Acc2",
+#                             "ACC_raw_V18_130_Star_Acc2","ACC_raw_V19_50_Star_Acc2",
+#                             "ACC_raw_V20_50_Star_Acc2","ACC_raw_V21_50_Star_Acc2")
+acc_inputs[,"num_iter"] <- c(50,300,500,300,100) #c(30, 30, 30, 50, 30, 50, 150, 50, 50, 50, 20, 130, 50, 50, 50)
+nr_obIter <- sum(as.numeric(acc_inputs[,"num_iter"]))
+nr_files <- nrow(acc_inputs)
+
+## Initialize dataframes and parameters
+ACC1_data_full <- NULL
+ACC2_data_full <- NULL
+rank_data_full <- NULL
+SigStar_data_full <- NULL
+SigStarRatio_data_full <- NULL
+prev_max_iter = 0
+
+## Loop to combine and process each file 
+
+for (file.idx in 1:nr_files){
+  #acc_list_curr <- acc_list[[i]]
+  filename <- acc_inputs[file.idx,1]
+  num_iter <- as.numeric(acc_inputs[file.idx,2])
+  
+  ################## Matlab readin
+  
+  readin_path <- path(RLG.dir, paste0(filename,".csv"))
+
+  acc_data = read.csv(readin_path, sep=",", header=FALSE) # ,stringsAsFactors = FALSE))
+  
+  ## VARIABLE NAMES
+  #ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50))
+  ill_interval <- seq(20,200,by=20)
+  num_ill_interval <- length(ill_interval)
+  #num_iter <- num_iter
+  num_nets <- 6
+  net_names <- paste0("RLG",c(1:6))
+ 
+  ## EXTRACT ACC DATA
+  ACC1_data <- t(acc_data[c(1:10),])
+  ACC2_data <- t(acc_data[c(12:21),])
+  rank_data <- t(acc_data[c(23:32),])
+  SigStar_data <- t(acc_data[c(34:43),]) 
+  SigStarRatio_data <- t(acc_data[c(45:54),])
+  # ACC1_data <- t(acc_data[c(1:9),])
+  # ACC2_data <- t(acc_data[c(11:19),])
+  # rank_data <- t(acc_data[c(21:29),])
+  # SigStar_data <- t(acc_data[c(31:39),])
+  # SigStarRatio_data <- t(acc_data[c(41:49),])
+  
+  ##################
+  
+  ACC1_data <- Matlab_format(ACC1_data, num_iter=num_iter, prev_max_iter=prev_max_iter,ill_interval=ill_interval)
+  ACC1_data_full <- rbind(ACC1_data, ACC1_data_full)
+  
+  ACC2_data <- Matlab_format(ACC2_data, num_iter=num_iter, prev_max_iter=prev_max_iter,ill_interval=ill_interval)
+  ACC2_data_full <- rbind(ACC2_data, ACC2_data_full)
+  
+  rank_data <- Matlab_format(rank_data, num_iter=num_iter, prev_max_iter=prev_max_iter,ill_interval=ill_interval)
+  rank_data_full <- rbind(rank_data, rank_data_full)
+  
+  SigStar_data <- Matlab_format(SigStar_data, num_iter=num_iter, prev_max_iter=prev_max_iter,ill_interval=ill_interval)
+  SigStar_data_full <- rbind(SigStar_data, SigStar_data_full)
+  
+  SigStarRatio_data <- Matlab_format(SigStarRatio_data, num_iter=num_iter, prev_max_iter=prev_max_iter, ill_interval=ill_interval)
+  SigStarRatio_data_full <- rbind(SigStarRatio_data, SigStarRatio_data_full)
+  
+  prev_max_iter <- prev_max_iter + num_iter
+  
+}
+
+## Divide SigStar by SigStarRatio to get SigStarHat
+SigStarHat_data_full <- SigStar_data_full
+SigStarHat_data_full <- dplyr::rename(SigStarHat_data_full, SigStar=value)
+SigStarHat_data_full <- cbind(SigStarHat_data_full, SigStarRatio_data_full$value) %>% dplyr::rename(SigStarHat = "SigStarRatio_data_full$value")
+SigStarHat_data_full$value <- SigStarHat_data_full$SigStar / SigStarHat_data_full$SigStarHat
+
+## Get CI overall and for each net, for each accuracy statistic
+CI.ACC1_net <- get.CI(ACC1_data_full, by_net=1)
+CI.ACC1_all <- get.CI(ACC1_data_full, by_net=0)
+CI.ACC2_net <- get.CI(ACC2_data_full, by_net=1)
+CI.ACC2_all <- get.CI(ACC2_data_full, by_net=0)
+CI.rank_net <- get.CI(rank_data_full, by_net=1)
+CI.rank_all <- get.CI(rank_data_full, by_net=0)
+CI.SigStar_net <- get.CI(SigStar_data_full, by_net=1)
+CI.SigStar_all <- get.CI(SigStar_data_full, by_net=0)
+CI.SigStarHat_net <- get.CI(SigStarHat_data_full, by_net=1)
+CI.SigStarHat_all <- get.CI(SigStarHat_data_full, by_net=0)
+```
+
+
+# Output mean of $\overline{\psi^{sim}_{N_i}}(c)$
+
+Saving $\overline{\psi^{sim}_{N_i}}(c)$ for each network to use in computing $\overline{\Psi^{Norm}_{N_i}}(c)$ in Matlab
+
+```{r}
+CI.SigStar_net <- arrange(CI.SigStar_net, desc(CI.SigStar_net$"foodnet"))
+CI.SigStar_net$N <- NULL
+CI.out <- CI.SigStar_net
+
+print(head(CI.out[,c(1:6)]))
+print(tail(CI.out[,c(1:6)]))
+
+CI.out$foodnet = gsub("RLG", '', CI.out$foodnet)
+CI.out <- dplyr::rename(CI.out, net_i=foodnet)
+CI.out <- CI.out[,c(2,1,3:ncol(CI.out))]
+CI.path <- path(output.dir, "accuracy/RLG6_CI_4Matlab.csv")
+write.csv(CI.out, CI.path)
+
+# net_i <- vector(length=nrow(CI.out))
+# for (i in 1:length(net_i)){
+#   if (CI.out[i,"foodnet"]=="vegetables") net_i[i]=1
+#   if (CI.out[i,"foodnet"]=="eggs") net_i[i]=2
+#   if (CI.out[i,"foodnet"]=="meatProducts") net_i[i]=3
+#   if (CI.out[i,"foodnet"]=="cheese") net_i[i]=4
+#   if (CI.out[i,"foodnet"]=="milkProducts") net_i[i]=5
+#   if (CI.out[i,"foodnet"]=="poultry") net_i[i]=6
+#   if (CI.out[i,"foodnet"]=="milk") net_i[i]=7
+# }
+# CI.out$foodnet <- NULL
+# CI.out <- cbind(net_i, CI.out)
+# CI.path <- path(output.dir, "accuracy/Germany_CI_4Matlab.csv")
+# write.csv(CI.out, CI.path)
+
+```
+
+
+# Figures
+
+```{r}
+
+plot_code <- path(code.dir, "plot_together_RLG.R")
+source(plot_code)
+
+```
+
+
+```{r}
+
+## Params for each of the plots
+#vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  
+CI.lvl <- 0.95
+plot.mean <- 1
+filter.iter<- 1250 #601
+x.lab.in <- expression(paste("Number illness cases ",italic("c")))  #"Number illness cases $c$"
+
+data.in <- rank_data_full  %>% filter(iter<filter.iter)
+y.lab.in <- "Rank (out of 6)"
+y.lim.in <- c(1, 4)
+p_rank_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                        x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+data.in <- ACC2_data_full %>% filter(iter<filter.iter)
+y.lab.in <- "Accuracy"
+y.lim.in <- c(0, 1)
+#y.lim.in <- c(0, 1)
+p_ACC_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                       x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+data.in <- SigStar_data_full %>% filter(iter<filter.iter)
+y.lab.in <- "Sim-Sig $N^{*}$" #"Norm-Sig $N^{*}$"
+#y.lim.in <- c(0.65, 1)
+#y.lim.in <- c(0,1.5)
+y.lim.in <- c(0,.05)
+p_SigStar_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                           x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+data.in <- SigStarHat_data_full %>% filter(iter<filter.iter)
+y.lab.in <- "Sim-Sig $\\hat{N}$" #"Norm-Sig $\\hat{N}$"
+#y.lim.in <- c(0.65, 1)
+#y.lim.in <- c(0,1.5)
+y.lim.in <- c(0,.05)
+p_SigStarHat_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                              x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+#p_rank_together + p_ACC_together + p_SigStar_together + p_SigStarHat_together + plot_layout(guides="collect")
+
+```
+
+
+## Plot of $\overline{\psi^{sim}_{N_i}}(c)$
+
+```{r}
+
+data.in <- SigStar_data_full %>% filter(iter<601)
+x.lab.in <- expression(paste("Number illness cases ",italic("c")))  #"Number illness cases $c$"
+y.lab.in <- "simulated signal relative to random $\\mathit{\\psi^{sim}_{N_i}}$"
+#y.lim.in <- c(0.65, 1)
+#y.lim.in <- c(0,1.5)
+y.lim.in <- c(0,.05)
+SimSig <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                           x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+SimSig
+
+# pdf(file = path(output.dir, "accuracy/final/Germany_SimSig_600ob_CI95.pdf"), width=10, height =10)
+# p_SigStar_together
+# dev.off()
+
+```
+
+
+## Convergence in $\overline{\psi^{sim}_{N_i}}(c)$ over iterations
+
+```{r}
+
+## Source supporting functions
+convergence_readin <- path(code.dir, "get_convergence_RLG.R")
+source(convergence_readin)
+
+## GET MEAN AND CI FOR EACH NETWORK AT INCREASING NUMBERS OF ITERATIONS USING STAT_SUMMARY
+
+nr_iter_convg = 600 #nr_obIter
+
+test.iter.idx <- c(seq(10,nr_iter_convg,10))
+num.ill.idx <- 200
+ACC.data.in <- SigStar_data_full
+mean.CI.overall.SigStar <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
+
+```
+
+```{r}
+
+######## GET PLOT
+
+traj.CI <- mean.CI.overall.SigStar
+chart.title <- "Convergence in Sim-Sig over simulations"
+x.lab.in <- expression(paste("Number iterations ",italic("m")))  #"Number illness cases $c$"
+y.lab.in <- "convergence in $\\mathit{\\psi^{sim}_{N_i,c'=300}}$"
+y.max.in <- .06
+y.lim.in <- c(0,.06)
+
+
+SimSig.conv <- plot.together.ribbon.conv(traj.CI=traj.CI, x.lab.in=x.lab.in, y.lim.in=y.lim.in, y.lab.in=y.lab.in, y.max.in=y.max.in)
+SimSig.conv
+# 
+# pdf(file = path(output.dir, "accuracy/final/conv_SimSig_600ob_CI95.pdf"), width=10, height =10)
+# plot.conv.ACC
+# dev.off()
+
+```
+
+
+```{r include = FALSE}
+  
+#pdf(file = path(output.dir, "figure_update/SimSig_and_convergence.pdf"), width=12, height =5)
+SimSig + SimSig.conv + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'a') & 
+  theme(plot.tag = element_text(size = 20))
+#dev.off()
+
+```
+

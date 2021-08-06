@@ -5,13 +5,13 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Baseline Signals"
-      href: index_BaselineSig_simple_plot.html
-    - text: "Simulated Signal"
+    - text: "Simulated Signal (RLG)"
+      href: index_RLG_raw.html
+    - text: "Normalized Signal Accuracy (RLG)"
+      href: index_SimSigR_convergence_RLG.html         
+    - text: "Simulated Signal (Germany nets)"
       href: index_AccPlots_raw.html
-    - text: "Single Outbreaks"
-      href: index_convergence_singleOB.html
-    - text: "Normalized Signal Accuracy"
+    - text: "Normalized Signal Accuracy (Germany nets)"
       href: index_SimSigR_convergence.html
   right:
     - icon: fa-github fa-lg

@@ -1,0 +1,348 @@
+---
+title: "Normalized Signal Resonance Measure: Stylized Networks"
+author: "Abigail Horn"
+date: "8/5/2021"
+output: 
+    html_document:
+        toc: TRUE
+        toc_float: TRUE
+editor_options: 
+  chunk_output_type: console
+---
+
+Normalized Signal Resonance Measure, $\overline{\Psi^{norm}_{N_i}}(c)$
+
+<!--Initialize-->
+
+``` {r setup, include=FALSE}
+
+### Install necessary packages and get started
+
+library(reshape2)
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(ggrepel)
+library(bindata)
+library(odin)
+library(fitR)
+library(knitr)
+library(EasyABC)
+library(gridExtra)
+library(odin)
+library(lubridate)
+library(EasyABC)
+library(gridExtra)
+library(kableExtra)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(scales)
+library(EasyABC)
+library(patchwork)
+
+library(tidyr)
+library(readr)
+library(purrr)
+library(tibble)
+library(stringr)
+library(forcats)
+library(network)
+library(tidygraph)
+library(ggraph)
+library(visNetwork)
+library(networkD3)
+library(ggmosaic)
+library(formattable)
+library(DT)
+library(reshape)
+library(here)
+library(fs)
+library(latex2exp)
+
+
+library(MASS)
+library(plotly)
+
+lang_output <- function(x, lang) {
+  cat(c(sprintf("```%s", lang), x, "```"), sep = "\n")
+}
+r_output <- function(x) lang_output(x, "r")
+
+knitr::opts_chunk$set(
+  fig.width = 9.5,
+  fig.height = 8,
+  eval=TRUE,
+  echo=FALSE,
+  warning=FALSE,
+  cache=FALSE,
+  message=FALSE,
+  include=TRUE
+  )
+
+code.dir=here("code/")
+Germany.dir=here("data/ACC_tests/Germany/")
+RLG.dir=here("data/ACC_tests/RLG2021/")
+fig.dir = here("figs/")
+output.dir = here("output/")
+
+```
+
+
+<!---Read in and process accuracy results from Matlab--->
+
+
+```{r}
+
+## Source supporting functions
+Matlab_readin <- path(code.dir, "Matlab_readin.R")
+source(Matlab_readin)
+
+########################################################
+## LOOP TO COMBINE AND PROCESS ALL ACCURACY FILES
+
+## Inputs -- names and parameters of ACC files
+filenames <- c("ACC_NormSig_1_300","ACC_NormSig_2_300","ACC_NormSig_100samp_3_100") 
+acc_inputs <- matrix(nrow=length(filenames), ncol=2)
+colnames(acc_inputs) <- c("filename","num_iter")
+acc_inputs[,"filename"] <- filenames
+acc_inputs[,"num_iter"] <- c(300,300,100) 
+nr_obIter <- sum(as.numeric(acc_inputs[,"num_iter"]))
+nr_files <- nrow(acc_inputs)
+
+## Initialize dataframes and parameters
+ACC1_data_full <- NULL
+ACC2_data_full <- NULL
+rank_data_full <- NULL
+SigStar_data_full <- NULL
+SigStarRatio_data_full <- NULL
+prev_max_iter = 0
+
+## Loop to combine and process each file 
+
+for (file.idx in 1:nr_files){
+  filename <- acc_inputs[file.idx,1]
+  num_iter <- as.numeric(acc_inputs[file.idx,2])
+  
+  ################## Matlab readin
+  
+  readin_path <- path(RLG.dir, paste0(filename,".csv"))
+
+  acc_data = read.csv(readin_path, sep=",", header=FALSE) # ,stringsAsFactors = FALSE))
+  
+  ## VARIABLE NAMES
+  #ill_interval <- c(seq(20,100,by=20), seq(150,300,by=50))
+  ill_interval <- seq(20,200,by=20)
+  num_ill_interval <- length(ill_interval)
+  #num_iter <- num_iter
+  num_nets <- 6
+  net_names <- paste0("RLG",c(1:6))
+ 
+  ## EXTRACT ACC DATA
+  ACC1_data <- t(acc_data[c(1:10),])
+  ACC2_data <- t(acc_data[c(12:21),])
+  rank_data <- t(acc_data[c(23:32),])
+  SigStar_data <- t(acc_data[c(34:43),]) 
+  SigStarRatio_data <- t(acc_data[c(45:54),])
+  # ACC1_data <- t(acc_data[c(1:9),])
+  # ACC2_data <- t(acc_data[c(11:19),])
+  # rank_data <- t(acc_data[c(21:29),])
+  # SigStar_data <- t(acc_data[c(31:39),])
+  # SigStarRatio_data <- t(acc_data[c(41:49),])
+  
+  ##################
+  
+  ACC1_data <- Matlab_format(ACC1_data, num_iter=num_iter, prev_max_iter=prev_max_iter,ill_interval=ill_interval)
+  ACC1_data_full <- rbind(ACC1_data, ACC1_data_full)
+  
+  ACC2_data <- Matlab_format(ACC2_data, num_iter=num_iter, prev_max_iter=prev_max_iter,ill_interval=ill_interval)
+  ACC2_data_full <- rbind(ACC2_data, ACC2_data_full)
+  
+  rank_data <- Matlab_format(rank_data, num_iter=num_iter, prev_max_iter=prev_max_iter,ill_interval=ill_interval)
+  rank_data_full <- rbind(rank_data, rank_data_full)
+  
+  SigStar_data <- Matlab_format(SigStar_data, num_iter=num_iter, prev_max_iter=prev_max_iter,ill_interval=ill_interval)
+  SigStar_data_full <- rbind(SigStar_data, SigStar_data_full)
+  
+  SigStarRatio_data <- Matlab_format(SigStarRatio_data, num_iter=num_iter, prev_max_iter=prev_max_iter, ill_interval=ill_interval)
+  SigStarRatio_data_full <- rbind(SigStarRatio_data, SigStarRatio_data_full)
+  
+  prev_max_iter <- prev_max_iter + num_iter
+  
+}
+
+## Divide SigStar by SigStarRatio to get SigStarHat
+SigStarHat_data_full <- SigStar_data_full
+SigStarHat_data_full <- dplyr::rename(SigStarHat_data_full, SigStar=value)
+SigStarHat_data_full <- cbind(SigStarHat_data_full, SigStarRatio_data_full$value) %>% dplyr::rename(SigStarHat = "SigStarRatio_data_full$value")
+SigStarHat_data_full$value <- SigStarHat_data_full$SigStar / SigStarHat_data_full$SigStarHat
+
+## Get CI overall and for each net, for each accuracy statistic
+CI.ACC1_net <- get.CI(ACC1_data_full, by_net=1)
+CI.ACC1_all <- get.CI(ACC1_data_full, by_net=0)
+CI.ACC2_net <- get.CI(ACC2_data_full, by_net=1)
+CI.ACC2_all <- get.CI(ACC2_data_full, by_net=0)
+CI.rank_net <- get.CI(rank_data_full, by_net=1)
+CI.rank_all <- get.CI(rank_data_full, by_net=0)
+CI.SigStar_net <- get.CI(SigStar_data_full, by_net=1)
+CI.SigStar_all <- get.CI(SigStar_data_full, by_net=0)
+CI.SigStarHat_net <- get.CI(SigStarHat_data_full, by_net=1)
+CI.SigStarHat_all <- get.CI(SigStarHat_data_full, by_net=0)
+```
+
+
+```{r}
+
+plot_code <- path(code.dir, "plot_together_RLG.R")
+source(plot_code)
+
+```
+
+
+# Accuracy metric plots
+
+```{r include=FALSE}
+
+x.lab.in <- expression(paste("Number illness cases ",italic("c")))  #"Number illness cases $c$"
+
+## Params for each of the plots
+#vars.to.plot <- c("vegetables",   "eggs",         "meatProducts",    "cheese",       "milkProducts", "poultry")  
+CI.lvl <- 0.95
+plot.mean <- 1
+
+data.in <- rank_data_full 
+y.lab.in <- "rank of $\\mathit{N^*}$ (out of 6)"
+y.lim.in <- c(1, 4)
+p_rank_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                        x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+data.in <- ACC2_data_full 
+y.lab.in <- "accuracy" #(rank $N^{*} \\leq 2$)" # Accuracy
+y.lim.in <- c(0, 1)
+#y.lim.in <- c(0, 1)
+p_ACC_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                       x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+data.in <- SigStar_data_full 
+y.lab.in <- "$\\Psi^{norm}_{N^*}$"  #"Norm-Sig $N^{*}$" #"Norm-Sig $N^{*}$"
+#y.lim.in <- c(0.65, 1)
+y.lim.in <- c(0,1.55)
+#y.lim.in <- c(0,.01)
+p_SigStar_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                           x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+data.in <- SigStarHat_data_full 
+y.lab.in <- "$\\Psi^{norm}_{N^*}$"  #"Norm-Sig $\\hat{N}$" #"Norm-Sig $\\hat{N}$"
+#y.lim.in <- c(0.65, 1)
+y.lim.in <- c(0,1.55)
+#y.lim.in <- c(0,.01)
+p_SigStarHat_together <- plot.together.ribbon(data.in=data.in,vars.to.plot=vars.to.plot,CI.lvl=CI.lvl, 
+                                              x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.lim.in=y.lim.in,plot.mean=plot.mean)
+
+```
+
+
+```{r}
+p_SigStar_together + p_SigStarHat_together + p_rank_together + p_ACC_together + plot_layout(guides="collect")
+
+```
+
+
+# Convergence plots
+
+```{r}
+
+## Source supporting functions
+convergence_readin <- path(code.dir, "get_convergence.R")
+source(convergence_readin)
+
+## GET MEAN AND CI FOR EACH NETWORK AT INCREASING NUMBERS OF ITERATIONS USING STAT_SUMMARY
+
+nr_ob_convg <- 700 #nr_obIter 
+
+test.iter.idx <- c(seq(10,nr_ob_convg,10))
+num.ill.idx <- 200
+ACC.data.in <- ACC2_data_full
+#ACC.data.in <- rank_data_full
+mean.CI.overall.ACC <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
+
+for (i in 1:nrow(mean.CI.overall.ACC)){
+  if (mean.CI.overall.ACC$ymax[i] > 1) mean.CI.overall.ACC$ymax[i] = 1
+}
+```
+
+```{r}
+
+traj.CI <- mean.CI.overall.ACC
+
+x.lab.in <- expression(paste("Number iterations ",italic("m")))  #"Number illness cases $c$"
+y.lab.in <- "convergence in accuracy at $\\mathit{c'=300}$"
+y.max.in <- 1
+plot.conv.ACC <- plot.together.ribbon.conv(traj.CI=traj.CI, x.lab.in=x.lab.in, y.lab.in=y.lab.in, 
+                                           y.lim.in=c(0,1), y.max.in=y.max.in)
+plot.conv.ACC
+
+# pdf(file = path(output.dir, "accuracy/final/conv_NormSigRank_650ob_CI95.pdf"), width=10, height =10)
+# plot.conv.ACC
+# dev.off()
+
+```
+
+
+
+<!---rank---> 
+```{r}
+
+## Source supporting functions
+convergence_readin <- path(code.dir, "get_convergence.R")
+source(convergence_readin)
+
+## GET MEAN AND CI FOR EACH NETWORK AT INCREASING NUMBERS OF ITERATIONS USING STAT_SUMMARY
+
+nr_ob_convg <- 700 #nr_obIter 
+
+test.iter.idx <- c(seq(10,nr_ob_convg,10))
+num.ill.idx <- 200
+#ACC.data.in <- ACC2_data_full
+ACC.data.in <- rank_data_full
+mean.CI.overall.rank <- get.conv(test.iter.idx=test.iter.idx, num.ill.idx = num.ill.idx, ACC.data.in = ACC.data.in)
+
+# for (i in 1:nrow(mean.CI.overall.ACC)){
+#   if (mean.CI.overall.ACC$ymax[i] > 1) mean.CI.overall.ACC$ymax[i] = 1
+# }
+
+```
+
+```{r}
+
+traj.CI <- mean.CI.overall.rank
+x.lab.in <- expression(paste("Number iterations ",italic("m")))  #"Number illness cases $c$"
+y.lab.in <- "convergence in rank at $\\mathit{c'=300}$"
+y.max.in <- 4
+plot.conv.rank <- plot.together.ribbon.conv(traj.CI=traj.CI, x.lab.in=x.lab.in, y.lab.in=y.lab.in, y.max.in=y.max.in,
+                                            y.lim.in=c(0,4))
+plot.conv.rank
+
+# pdf(file = path(output.dir, "accuracy/final/conv_NormSigRank_650ob_CI95.pdf"), width=10, height =10)
+# plot.conv.ACC
+# dev.off()
+
+```
+
+
+
+```{r}
+
+# pdf(file = path(output.dir, "figure_update/accuracyMetrics.pdf"), width=10, height=10)
+# 
+# (p_rank_together + p_ACC_together) / (plot.conv.rank + plot.conv.ACC) + 
+#   plot_layout(guides = "collect") + plot_annotation(tag_levels = 'a') & 
+#   theme(plot.tag = element_text(size = 20))
+# 
+# dev.off()
+
+```
+
+
+
+
