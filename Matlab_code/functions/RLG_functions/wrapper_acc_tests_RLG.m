@@ -5,7 +5,7 @@
 num_ob = 100;
 num_samples=100;
 dpr_flag = 0;
-computing_NormSig = 1;
+computing_NormSig = 0;
 
 %% Input data
 

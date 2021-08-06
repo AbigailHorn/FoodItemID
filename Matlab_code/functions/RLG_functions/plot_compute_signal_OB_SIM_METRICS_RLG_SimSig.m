@@ -29,7 +29,7 @@ num_time_points = size(ill_over_time_interval,2);
                  %[~, MC_SimSig, MC_raw] = SimSig_L3_OB_RLG(method_i, food_net, stage_ends, prior_pmf, current_ob_data, num_samples, ill_over_time_interval);
                 
                  %%% NOTE: Use this WHEN normalizing by an already-computed SigStar
-                 [~, MC_SimSig, MC_raw] = SimSig_L3_OB_RLG_norm(net_i, method_i, food_net, stage_ends, prior_pmf, current_ob_data, num_samples, ill_over_time_interval);
+                 [~, MC_SimSig, MC_raw] = SimSig_L3_OB_RLG(method_i, food_net, stage_ends, prior_pmf, current_ob_data, num_samples, ill_over_time_interval);
 
                  
             else
