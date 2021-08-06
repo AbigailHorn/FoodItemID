@@ -284,8 +284,9 @@ h6 {
 }
 </style>
 
-<style type="text/css">h1 {
-font-size: 32px;
+<style type="text/css">
+h1 {
+font-size: 42px;
 }
 h1.title {
 font-size: 32px;
@@ -317,7 +318,21 @@ border-radius: 50%;
 code { 
 font-size: 15px;
 }
-</style>
+.navbar {
+background: black;
+}
+.navbar-brand {
+padding-top: 0px;
+color: #ab9f9f !important;
+}
+.navbar {
+height: 60px;
+min-height:60px !important;
+}
+.navbar-nav > li > a, .navbar-brand {
+padding-top:5px !important; padding-bottom:5px !important;
+height: 30px;
+}</style>
 
 
 
@@ -525,21 +540,21 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="index_BaselineSig_simple_plot.html">Baseline Signals</a>
+  <a href="index_RLG_raw.html">Simulated Signal (RLG)</a>
 </li>
 <li>
-  <a href="index_AccPlots_raw.html">Simulated Signal</a>
+  <a href="index_SimSigR_convergence_RLG.html">Normalized Signal Accuracy (RLG)</a>
 </li>
 <li>
-  <a href="index_SimSigR_convergence.html">Normalized Signal Accuracy</a>
+  <a href="index_AccPlots_raw.html">Simulated Signal (Germany nets)</a>
 </li>
 <li>
-  <a href="index_convergence_singleOB.html">Single Outbreaks</a>
+  <a href="index_SimSigR_convergence.html">Normalized Signal Accuracy (Germany nets)</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/USCbiostats/PM566">
+  <a href="https://github.com/AbigailHorn/FoodItemID">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -563,58 +578,65 @@ $(document).ready(function () {
 <div id="see-this-as-a-website" class="section level2">
 <h2><a href="https://abigailhorn.github.io/FoodItemID/"><strong>See this as a website</strong></a></h2>
 <p><br></p>
-</div>
-</div>
-<div id="network-based-signal-resonance-for-food-source-identification-in-foodborne-disease-outbreaks" class="section level1">
-<h1>Network-based signal resonance for food-source identification in foodborne disease outbreaks</h1>
-<p>Abigail L. Horn<sup>1</sup>, Marcel Fuhrmann<sup>2</sup>, Tim Schlaich<sup>3</sup>, Andreas Balster<sup>3</sup>, Elena Polozova<sup>4</sup>, Annemarie Kaesboehrer<sup>2</sup>, Matthias Filter<sup>2</sup>, Hanno Friedrich<sup>3</sup></p>
-<p><sup>1</sup> Division of Biostatistics, Department of Preventive Medicine, University of Southern California, Los Angeles, CA, USA</p>
+<p><strong>Information-theoretic methods for food supply network identification in foodborne disease outbreaks</strong></p>
+<p>Abigail L. Horn<sup>1,2</sup>, Marcel Fuhrmann<sup>2</sup>, Tim Schlaich<sup>3</sup>, Andreas Balster<sup>3</sup>, Elena Polozova<sup>4</sup>, Armin Weiser<sup>2</sup>, Annemarie Kaesboehrer<sup>2</sup>, Matthias Filter<sup>2</sup>, Hanno Friedrich<sup>3</sup></p>
+<p><br></p>
+<p><sup>1</sup> Department of Population and Public Health Sciences, University of Southern California, Los Angeles, CA, USA</p>
 <p><sup>2</sup> Federal Institute for Risk Assessment (BfR), 10589 Berlin, Germany</p>
 <p><sup>3</sup> Kuhne Logistics University, 20457 Hamburg, Germany</p>
-<p><sup>4</sup> Facebook</p>
+<p><sup>4</sup> MIT</p>
 <p><br></p>
 <p><br></p>
 </div>
-<div id="using-this-code" class="section level1">
-<h1>Using this code</h1>
-<div id="r-code" class="section level2">
-<h2>R code</h2>
+</div>
+<div id="r-code" class="section level1">
+<h1>R code</h1>
 <p><code>R</code> was used to compute t-test 95% confidence intervals and create Figures 4-9 in the paper.</p>
-<div id="files" class="section level3">
-<h3>Files</h3>
+<p><br></p>
+<div id="germany-networks" class="section level2">
+<h2>Germany Networks</h2>
+<p><br></p>
 <ol style="list-style-type: decimal">
-<li><a href="index_BaselineSig_simple_plot.html">Baseline characteristic signal resonance</a>: results</li>
+<li><a href="index_BaselineSig_simple_plot.html">Baseline characteristic signal resonance, Germany networks</a>: results</li>
 </ol>
 <ul>
 <li>Baseline signals from simulated outbreaks: <span class="math inline">\(B^{sim}_{N_i,c,k}\)</span></li>
 <li>Baseline signals from random sampled outbreaks: <span class="math inline">\(B^{rand}_{N_i,c,k}\)</span></li>
 </ul>
 <ol start="2" style="list-style-type: decimal">
-<li><a href="index_AccPlots_raw.html">Simulated Signal Relative to Random</a>, <span class="math inline">\(\overline{\psi^{sim}_{N_i}}(c)\)</span>: results</li>
-<li><a href="index_SimSigR_convergence.html">Normalized Signal Resonance measure</a>, <span class="math inline">\(\overline{\Psi^{Norm}_{N_i}}(c)\)</span>: accuracy results on simulated outbreaks 4 metrics of accuracy of <span class="math inline">\(\overline{\Psi^{Norm}_{N_i}}(c)\)</span>:</li>
-</ol>
-<ul>
-<li><span class="math inline">\(\overline{\Psi^{Norm}_{N^*}}(c)\)</span> value</li>
-<li><span class="math inline">\(\overline{\Psi^{Norm}_{\hat{N_i}}}(c)\)</span> value</li>
-<li>Rank of <span class="math inline">\(N^*\)</span></li>
-<li>Binary accuracy, whether rank(<span class="math inline">\(N^*\)</span>) <span class="math inline">\(\leq 3\)</span></li>
-</ul>
-<ol start="4" style="list-style-type: decimal">
-<li><a href="index_convergence_singleOB.html">Normalized Signal Resonance measure</a>, <span class="math inline">\(\overline{\Psi^{Norm}_{N_i}}(c)\)</span>: results for single outbreaks</li>
+<li><a href="index_AccPlots_raw.html">Simulated Signal Relative to Random, Germany networks</a>, <span class="math inline">\(\overline{\psi^{sim}_{N_i}}(c)\)</span>: plot and convergence</li>
+<li><a href="index_convergence_singleOB.html">Normalized Signal Resonance measure, Germany networks</a>, <span class="math inline">\(\overline{\Psi^{norm}_{N_i}}(c)\)</span>: results for single outbreaks</li>
+<li><a href="index_SimSigR_convergence.html">Normalized Signal Resonance measure, Germany networks</a>, <span class="math inline">\(\overline{\Psi^{norm}_{N_i}}(c)\)</span>: accuracy results on simulated outbreaks</li>
 </ol>
 <p><br></p>
 </div>
-<div id="instructions-for-using-r_code" class="section level3">
-<h3>Instructions for using R_code</h3>
+<div id="stylized-networks-random-layered-graphs-rlg" class="section level2">
+<h2>Stylized Networks (random layered graphs, RLG)</h2>
+<ol style="list-style-type: decimal">
+<li><a href="index_RLG_raw.html">Simulated Signal Relative to Random, RLG</a>, <span class="math inline">\(\overline{\psi^{sim}_{N_i}}(c)\)</span>: plot and convergence</li>
+<li><a href="index_SimSigR_convergence.html">Normalized Signal Resonance measure, RLG</a>, <span class="math inline">\(\overline{\Psi^{norm}_{N_i}}(c)\)</span>: accuracy results on simulated outbreaks</li>
+</ol>
+<p><br></p>
+</div>
+<div id="instructions-for-using-r_code" class="section level2">
+<h2>Instructions for using R_code</h2>
 <p>Knit the code in each markdown file <code>index____.Rmd</code> to reproduce analysis in each file. If the repository is built from the project file <code>FoodItemID.Rproj</code>, the working directory should not need to be set.</p>
 <p><br></p>
 </div>
 </div>
-<div id="matlab-code" class="section level2">
-<h2>Matlab code</h2>
-<p><code>Matlab</code> was used for all signal computations in the paper. The data files for each network and outbreak are included in the <code>workspace.mat</code> file.</p>
-<p>Before running any codes, add the <code>function_code</code> folder and all subfolders to the working directory</p>
-<p>There are 3 main wrapper codes that can be used to re-run the analyses in the paper:</p>
+<div id="matlab-code" class="section level1">
+<h1>Matlab code</h1>
+<ul>
+<li><code>Matlab</code> was used for all signal computations in the paper.</li>
+<li>The data files (variables) for each network and outbreak are included in the file <code>variables/workspace_variables_080521.mat</code></li>
+<li>Before running any codes, add the <code>functions</code> folder and all subfolders to the working directory.</li>
+<li>There are 3 categories of functions/scripts: (i) for Germany networks, (ii) for stylized networks (RLG), and (iii) global functions that are used for both.</li>
+</ul>
+<p><br></p>
+<div id="germany-networks-1" class="section level2">
+<h2>Germany networks</h2>
+<p>There are 3 main wrapper codes that can be used to re-run the analyses in the paper. The functions used in each wrapper code can be traced back to see the full trajectory of computations from simulating an outbreak, to applying the source localization algorithm, to applying the normalized signal resonance measure, to outputting the results.</p>
+<p><em>Wrapper codes</em></p>
 <ul>
 <li><code>wrapper_BaselineSig_WHS4.m</code>
 <ul>
@@ -630,18 +652,45 @@ $(document).ready(function () {
 <li>Computes, simultaneously, Simulated Signal Relative to Random] <span class="math inline">\(\overline{\psi^{sim}_{N_i}}(c)\)</span> (see results in <code>method0_Sig</code>) and Normalized Signal Resonance measure <span class="math inline">\(\overline{\Psi^{Norm}_{N_i}}(c)\)</span> (see results in <code>method0_raw</code>)</li>
 <li>Specify number of outbreaks <span class="math inline">\(m\)</span> to generate <em>for each network</em> in <code>num_ob</code></li>
 <li>For outbreak <span class="math inline">\(m\)</span>, specify number of iterations <span class="math inline">\(k\)</span> to compute for each <span class="math inline">\(\Psi^{norm}_{N_i,c,k,m}\)</span> in <code>num_samples</code></li>
-<li>Will compute accuracy metrics according and output files into a .csv file for processing within <code>R</code></li>
+<li>Will compute accuracy metrics and then output files into a .csv file for processing within <code>R</code></li>
 </ul></li>
-<li>The functions used in each wrapper code can be traced back to see the full trajectory of computations from simulating an outbreak, to applying the source localization algorithm, to applying the normalized signal resonance measure, to outputting the results.</li>
+<li><code>get_sim_ob_printPMF_WHS.m</code>:
+<ul>
+<li>generates a single outbreak</li>
+<li>applies the source localization algorithm to get pmf</li>
+<li>prints the pmf</li>
+</ul></li>
 </ul>
 <p><br></p>
-<p>The code to generate a single outbreak, apply source localization algorithm to get pmf, and print the pmf, is in: * <code>get_sim_ob_printPMF_WHS.m</code></p>
+</div>
+<div id="stylized-networks-rlg" class="section level2">
+<h2>Stylized Networks (RLG)</h2>
+<p>To analyze the Normalized Signal Resonance measure on stylized networks (RLG), one must first generate a sample set of RLG, and second run the code on these networks.</p>
+<ul>
+<li><p>To generate a sample set of RLG, use the script <code>wrapper_generate_RLG.m</code></p></li>
+<li><p>To generate a single outbreak and plot its pmf use the script <code>get_sim_ob_RLG.m</code>:</p>
+<ul>
+<li>generates a single outbreak</li>
+<li>applies the source localization algorithm to get pmf</li>
+<li>prints the pmf</li>
+</ul></li>
+<li><p>To recreate simulation accuracy tests on RLG, wse the wrapper script <code>wrapper_acc_tests_RLG.m</code> and the following instructions:</p>
+<ul>
+<li><p>Specify number of outbreaks <span class="math inline">\(m\)</span> to generate <em>for each network</em> in <code>num_ob</code></p></li>
+<li><p>For outbreak <span class="math inline">\(m\)</span>, specify number of iterations <span class="math inline">\(k\)</span> to compute for each <span class="math inline">\(\Psi^{norm}_{N_i,c,k,m}\)</span> in <code>num_samples</code></p></li>
+<li><p>If computing Simulated Signal Relative to Random (<span class="math inline">\(\overline{\psi^{sim}_{N_i}}(c)\)</span>) for use in Normalized Signal Resonance measure, set <code>computing_NormSig=0</code>. If computing Normalized Signal Resonance measure (<span class="math inline">\(\overline{\Psi^{Norm}_{N_i}}(c)\)</span>), set <code>computing_NormSig=1</code>.</p></li>
+</ul></li>
+<li><p>Note that to compute the Normalized Signal Resonance measure, you will need to:</p>
+<p><strong>1.</strong> Compute Simulated Signal Relative to Random in <code>Matlab</code> using the code above with <code>computing_NormSig=0</code>.</p>
+<p><strong>2.</strong> Read computed Simulated Signal Relative to Random into <code>R</code> and compute mean and 95% CI statistics for each network using the code within the <code>R markdown</code> file, <code>index_RLG_raw.Rmd</code>. Save this as a csv file as e.g. <code>RLG6_CI_4Matlab.csv</code></p>
+<p><strong>3.</strong> Read the file <code>RLG6_CI_4Matlab.csv</code> into <code>Matlab</code> and use in the function script <code>SimSig_L3_OB_RLG_norm.m</code> within lines 14-17. Use the exact same <code>num_ill_intervals</code> as used to compute the Simulated Signal Relative to Random.</p></li>
+</ul>
 <p><br> <br></p>
 </div>
-<div id="network-models-in-r" class="section level2">
-<h2>Network models in R</h2>
-<p>Please see <a href="https://gitlab.com/DjMaFu/networkfeatures/-/tree/master">this GitLab repository</a> for R code for analyzing the network features of the German food supply networks, including transforming the networks into network files.</p>
 </div>
+<div id="network-models-in-r" class="section level1">
+<h1>Network models in R</h1>
+<p>Please see <a href="https://gitlab.com/DjMaFu/networkfeatures/-/tree/master">this GitLab repository</a> for R code for analyzing the network features of the German food supply networks, including transforming the networks into network files.</p>
 </div>
 
 
